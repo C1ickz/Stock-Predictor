@@ -1,3 +1,4 @@
+import pandas as pd
 import pandas_datareader as web
 import matplotlib.pyplot as plt
 import datetime as dt
@@ -6,13 +7,17 @@ import datetime as dt
 def gatherData():
     start = dt.datetime(2018, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(2019, 10, 9)
-    ticker = input("input ticker (NOTE: This is not being error checked): ").upper()
-    df = web.DataReader(ticker, 'yahoo', start, end)  # if ticker does not work add ^ in front aka ^tkr
-    # print(df.tail(10))  # prints first 10 lines of stock data
-    # print("-----------")
-    # print(df['Adj Close'])
+    try:
+        ticker = input("input ticker: ").upper()
+        df = web.DataReader(ticker, 'yahoo', start, end)
+        df.to_csv("test.csv")
 
-    return df, ticker
+0
+        return df, ticker
+
+    except pandas_datareader._utils.RemoteDataError:
+        print(f"Stock ticker {ticker} does not exist or is not in yahoo finance database")
+        quit()
 
 
 def displayGraph(df):
