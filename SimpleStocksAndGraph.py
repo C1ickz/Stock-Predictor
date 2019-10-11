@@ -12,7 +12,7 @@ def gatherData():
         df = web.DataReader(ticker, 'yahoo', start, end)
         df.to_csv("test.csv")
 
-0
+
         return df, ticker
 
     except pandas_datareader._utils.RemoteDataError:
