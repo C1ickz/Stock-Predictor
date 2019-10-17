@@ -9,13 +9,17 @@ def gatherData():
     start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(2019, 10, 9)
 
-    # if csv file does not exist in directory create new one
-    if not glob('*.csv'):
+    response = input('Would you like write data to a new file? ')
+    if not response.find("yes"):
         file = input("Please input file name you want the data written to: ")
 
-    # else if a csv file does exist use it
-    else:
-        file = glob('*.csv')[0]
+        if '.csv' not in file:
+            file = file + '.csv'
+
+    elif not response.find('no'):
+        print(glob('*.csv'))
+        index = int(input('Please enter a integer representing index of the csv file you wish to use: '))
+        file = glob('*.csv')[index]
 
     try:
         ticker = input("input ticker: ").upper()
@@ -24,8 +28,8 @@ def gatherData():
 
         return df, ticker
 
-    except pandas_datareader._utils.RemoteDataError:
-        print(f"Stock ticker {ticker} does not exist or is not in yahoo finance database")
+    except web._utils.RemoteDataError:
+        print(f"Stock ticker {ticker} does not exist, or is not in yahoo finance database")
         quit()
 
 
