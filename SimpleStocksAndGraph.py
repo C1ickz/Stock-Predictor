@@ -6,54 +6,34 @@ from glob import glob
 import datetime
 
 
-def gatherData():
+class Stock:
+    def __init__(self, ticker):
+        self.ticker = ticker
 
-    #block gets current date and sets appropriate variables
-    d = datetime.datetime.today()
-    year = d.year
-    month = d.month
-    day = d.day
+    def gather_data(self):
+        # block gets current date and sets appropriate variables
+        d = datetime.datetime.today()
+        year = d.year
+        month = d.month
+        day = d.day
 
-    start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
-    end = dt.datetime(year, month, day)
+        start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
+        end = dt.datetime(year, month, day)
 
-    response = input('Would you like write data to a new file(y or n)? ').upper()
-    if not response.find("Y"):
-        file = input("Please input file name you want the data written to: ")
+        file = glob('tesla.csv')[0]
 
-        if '.csv' not in file:
-            file = file + '.csv'
-
-    elif not response.find('N'):
-        print(glob('*.csv'))
-        index = int(input('Please enter a integer representing index of the csv file you wish to use: '))
-        file = glob('*.csv')[index]
-
-    try:
-        ticker = input("input ticker: ").upper()
-        df = web.DataReader(ticker, 'yahoo', start, end)
+        df = web.DataReader(self.ticker, 'yahoo', start, end)
         df.to_csv(file)
 
-        return df, ticker
 
-    except web._utils.RemoteDataError:
-        print(f"Stock ticker {ticker} does not exist, or is not in yahoo finance database")
-        quit()
+class Graph:
+    def __init__(self, stock_name):
+        self.stock_name = stock_name
 
-
-def displayGraph(df):
-    # try to graph
-    wantToSee = input("Do you want to see the graph?(y or n): ")
-    if wantToSee == 'y':
-        fig = plt.figure(f"Graph of {df[1]}'s Stock History")
+    def display_graph(self, df):
+        # try to graph
         plt.style.use('dark_background')
         df[0]["Adj Close"].plot()
         plt.title(f"Stock Prices of {df[1]}")
         plt.ylabel("Price ($)")
         plt.show()
-    else:
-        print("exiting program...")
-
-
-data = gatherData()
-displayGraph(data)
