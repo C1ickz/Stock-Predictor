@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import datetime as dt
 from glob import glob
 import datetime
+from progress.bar import Bar
+
 
 
 def gatherData():
