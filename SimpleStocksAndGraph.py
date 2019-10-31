@@ -9,7 +9,7 @@ import datetime
 def gatherData():
 
     #block gets current date and sets appropriate variables
-    d = datetime.datetime.today()
+    d = dt.datetime.today()
     year = d.year
     month = d.month
     day = d.day
@@ -43,12 +43,13 @@ def gatherData():
 
 def displayGraph(df):
     # try to graph
+    ticker = df[1]
     wantToSee = input("Do you want to see the graph?(y or n): ")
     if wantToSee == 'y':
-        fig = plt.figure(f"Graph of {df[1]}'s Stock History")
-        plt.style.use('dark_background')
+        fig = plt.figure(f"Graph of {ticker}'s Stock History")
+        plt.style.use('ggplot')
         df[0]["Adj Close"].plot()
-        plt.title(f"Stock Prices of {df[1]}")
+        plt.title(f"Stock Prices of {ticker}")
         plt.ylabel("Price ($)")
         plt.show()
     else:
