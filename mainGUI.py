@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
-from SimpleStocksAndGraph import Stock
+# from SimpleStocksAndGraph import Stock
+from stockclient import StockPSocket
 
 window = Tk()
 window.title('Stock Predictor')
@@ -18,12 +19,15 @@ def clicked_tkr():
         if txt.get().strip():
             ticker = txt.get().strip()
         else:
-            raise ValueError('empty string')
-        s = Stock(ticker)
-        s.gather_data()
+            raise ValueError('Empty string')
 
+        client_socket = StockPSocket('192.168.0.117', 9998)
+        client_socket.send_request(ticker)
+        prediction = client_socket.receive()
+        client_socket.close()
     except ValueError as e:
         messagebox.showinfo('Invalid', 'Please enter a proper stock ticker.')
+    return prediction
 
 
 btn = Button(window, text='Submit', command=clicked_tkr)
