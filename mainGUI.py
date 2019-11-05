@@ -1,3 +1,17 @@
+# Developed by: Jordan Davis and Ryan Harris
+#
+# Emails: davisja2023@mountunion.edu and harrisrl2023@mountunion.edu
+#
+# Description:This program has a user-facing GUI that interacts
+# with a server. The server predicts future stock prices using
+# an Long-Short-Term-Memory (LSTM) network. The training of
+# the model takes place on the server and the result of the
+# prediction is sent back to the client with as little latency
+# as possible.
+#
+# NOTE: The server object was also designed and implemented
+# by Jordan Davis and Ryan Harris.
+
 from tkinter import *
 from tkinter import messagebox
 from stockclient import StockPSocket
