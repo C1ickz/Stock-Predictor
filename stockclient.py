@@ -21,7 +21,7 @@ class StockPSocket:
         self.s.sendall(request.encode('UTF-8'))
 
     def receive(self):
-        return self.s.recv(1024).decode('UTF-8')
+        return self.s.recv(2048).decode('UTF-8')
 
     def close(self):
         self.s.close()

@@ -16,8 +16,8 @@ serverS.listen(20)
 
 
 # test method
-def test(name):
-    return 'Jordan\'s laptop says, Hello {}!'.format(name)
+def test(tkr, pred=90):
+    return '{} has a predicted value of ${}'.format(tkr, pred)
 
 
 # print at starts
@@ -26,14 +26,10 @@ print('Waiting for connections...')
 while True:
     curr_conn, addr = serverS.accept()
     print('Log: connection made by: {}'.format(addr))
-    data = curr_conn.recv(2048).decode('UTF-8')
-    data = data.split(',')
-    data = [x.strip() for x in data]
+    tkr = curr_conn.recv(2048).decode('UTF-8')
     try:
-        if data != data: raise ValueError()
-        if data[0] == 'submit':
-            curr_conn.sendall(test(data[1]).encode('UTF-8'))
-        else:
-            raise TypeError()
-    except (IndexError, TypeError, ValueError):
-        curr_conn.sendall('error occured in submission'.encode('UTF-8'))
+        curr_conn.sendall(test(tkr).encode('UTF-8'))
+
+    except Exception as e:
+        print(e.with_traceback())
+        curr_conn.sendall('Error occurred in submission'.encode('UTF-8'))
