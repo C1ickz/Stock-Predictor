@@ -14,25 +14,26 @@ from tensorflow.keras.callbacks import EarlyStopping
 df = pd.read_csv('tesla.csv')  # TODO make so user can choose csv
 df = df.set_index(df['Date'])
 most_recent = pd.Timestamp(df['Date'].max())
-trainingRange = str(most_recent - dt.timedelta(days=7))
+trainingRange = str(most_recent - dt.timedelta(days=100))
 train = df.loc[:trainingRange, ['Adj Close']]
 test = df.loc[trainingRange:, ['Adj Close']]
 scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
 train_scaled = scaler.fit_transform(train)
 test_scaled = scaler.transform(test)
 
-X_train = train_scaled[:-1]
+X_train = train_scaled[:-1, None]
 Y_train = train_scaled[1:]
-X_test = test_scaled[:-1]
+X_test = test_scaled[:-1, None]
 Y_test = test_scaled[1:]
+
 print(X_train.shape, Y_train.shape)
 model = Sequential()
-model.add(Dense(12, input_dim=1, activation='relu'))  # tanh also works but relu provides best results
+model.add(LSTM(12, input_shape=(1, 1), activation='relu'))  # tanh also works but relu provides best results
 model.add(Dense(1, activation='linear'))
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
 monitor = EarlyStopping(monitor='loss', min_delta=1e-3, patience=10,
                         verbose=1, mode='auto', restore_best_weights=True)
-model.fit(X_train, Y_train, callbacks=[monitor], verbose=2, epochs=200)
+model.fit(X_train, Y_train, callbacks=[monitor], verbose=1, epochs=200)
 
 # TODO Move code for predictions somewhere else
 prediction = model.predict(X_test)
