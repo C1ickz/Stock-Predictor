@@ -54,9 +54,10 @@ class MainGUI:
             else:
                 raise ValueError('Empty string')
 
-            client_socket = StockPSocket('192.168.0.117', 9998)
+            client_socket = StockPSocket('192.168.0.107', 9998)
             client_socket.send_request(ticker)
-            self.update_prediction_out(client_socket.receive())
+            print(client_socket.receive())  # for debugging
+            # self.update_prediction_out(client_socket.receive())
             client_socket.close()
 
         except ValueError as e:
@@ -71,7 +72,6 @@ class MainGUI:
     def update_prediction_out(self, prediction):
         self.set_prediction(prediction)
         self.p_out_lbl['text'] = self.get_prediction()
-
 
 
 root = Tk()

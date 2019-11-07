@@ -1,5 +1,5 @@
 import socket
-
+import pickle
 
 class StockPSocket:
     def __init__(self, host, port):
@@ -21,7 +21,9 @@ class StockPSocket:
         self.s.sendall(request.encode('UTF-8'))
 
     def receive(self):
-        return self.s.recv(2048).decode('UTF-8')
+        rec = self.s.recv(2048)
+        rec = pickle.loads(rec)
+        return rec
 
     def close(self):
         self.s.close()
