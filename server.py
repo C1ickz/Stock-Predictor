@@ -2,7 +2,11 @@
 import socket
 import pandas as pd
 import pickle
+import pandas_datareader as web
+import datetime as dt
+import datetime
 
+# creates server socket
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
@@ -16,28 +20,31 @@ serverS.bind((host, port))
 serverS.listen(20)
 
 
-# test method
-def test():
-    raw_data = {'first_name': ['Jason', 'Molly', 'Tina', 'Jake', 'Amy'],
-                'last_name': ['Miller', 'Jacobson', 'Ali', 'Milner', 'Cooze'],
-                'age': [42, 52, 36, 24, 73],
-                'preTestScore': [4, 24, 31, 2, 3],
-                'postTestScore': [25, 94, 57, 62, 70]}
-    df = pd.DataFrame(raw_data, columns=['first_name', 'last_name', 'age', 'preTestScore', 'postTestScore'])
-    to_send = pickle.dumps(df)
-    return to_send
+# retrieves data from online server
+def gather_data(tkr):
+    # block gets current date and sets appropriate variables
+    d = datetime.datetime.today()
+    year = d.year
+    month = d.month
+    day = d.day
+
+    start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
+    end = dt.datetime(year, month, day)
+    df = web.DataReader(tkr, 'yahoo', start, end)
+    df = pickle.dumps(df)
+    return df
 
 
-# print at starts
-print('Waiting for connections...')
+# print at start
+print('Waiting for connection...')
 
 while True:
     curr_conn, addr = serverS.accept()
     print(f'Log: connection made by: {addr}')
     tkr = curr_conn.recv(2048).decode('UTF-8')
-    try:
-        curr_conn.sendall(test())
 
-    except Exception as e:
-        print(e.with_traceback())
-        curr_conn.sendall('Error occurred in submission'.encode('UTF-8'))
+    try:
+        curr_conn.send(gather_data(tkr))
+        print('Send Successful')
+    except Exception:
+        print('Error occurred in sending')
