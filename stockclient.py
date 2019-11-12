@@ -19,6 +19,15 @@ class StockPSocket:
             print('Error occurred when connecting to server')
             raise ConnectionRefusedError()
 
+    # validates stock ticker input
+    def validate(self, tkr):
+        self.s.sendall(tkr.encode('UTF-8'))
+        return self.check_validation()
+
+    def check_validation(self):
+        inp = self.s.recv(1024).decode('UTF-8')
+        return inp
+
     # requests data from server
     def send_request(self, request):
         self.s.sendall(request.encode('UTF-8'))
@@ -39,7 +48,7 @@ class StockPSocket:
                     begin = time.time()
                 else:
                     time.sleep(0.1)
-            except Exception:   
+            except Exception:
                 pass
         rec = b''.join(data)
         df = pickle.loads(rec)

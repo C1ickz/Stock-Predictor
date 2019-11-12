@@ -14,18 +14,22 @@
 
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 from stockclient import StockPSocket
 
 
 class MainGUI:
     def __init__(self, master):
+        # sets host and port of server
+        self.host = '192.168.0.117'
+        self.port = 9998
 
         # sets up prediction variable
         self.prediction = 0
 
         self.master = master
         master.title('Stock Predictor')
-        master.geometry('400x300')
+        master.geometry('500x400')
 
         # creates label
         self.lbl = Label(master, text='Input Stock Ticker')
@@ -43,8 +47,10 @@ class MainGUI:
         self.p_lbl = Label(master, text='Prediction: ')
         self.p_lbl.grid(column=0, row=2)
 
+        # creates prediction output label
         self.p_out_lbl = Label(master, text=self.get_prediction())
         self.p_out_lbl.grid(column=1, row=2)
+
 
     def clicked_tkr(self):
         ticker = ""
@@ -54,14 +60,21 @@ class MainGUI:
             else:
                 raise ValueError('Empty string')
 
-            client_socket = StockPSocket('192.168.0.107', 9998)
-            client_socket.send_request(ticker)
-            print(client_socket.receive())  # for debugging
-            # self.update_prediction_out(client_socket.receive())
-            client_socket.close()
+            self.update_prediction_out('Please wait..')  # prints after return from call...needs fixed
+
+            client_socket = StockPSocket(self.host, self.port)
+            if client_socket.validate(ticker + 'v') == 'error':
+                client_socket.close()
+                raise ValueError()
+            else:
+                client_socket = StockPSocket(self.host, self.port)
+                client_socket.send_request(ticker + 'r')
+                print(client_socket.receive())
+                client_socket.close()
+            # self.update_prediction_out(client_socket.receive()) # after Ryan finishes lstm prediction
 
         except ValueError as e:
-            messagebox.showinfo('Invalid', 'Please enter a proper stock ticker.')
+            messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')
 
     def set_prediction(self, prediction):
         self.prediction = prediction
