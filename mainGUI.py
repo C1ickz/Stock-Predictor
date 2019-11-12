@@ -51,7 +51,6 @@ class MainGUI:
         self.p_out_lbl = Label(master, text=self.get_prediction())
         self.p_out_lbl.grid(column=1, row=2)
 
-
     def clicked_tkr(self):
         ticker = ""
         try:
@@ -60,7 +59,7 @@ class MainGUI:
             else:
                 raise ValueError('Empty string')
 
-            self.update_prediction_out('Please wait..')  # prints after return from call...needs fixed
+            self.update_prediction_out('Please wait..')
 
             client_socket = StockPSocket(self.host, self.port)
             if client_socket.validate(ticker + 'v') == 'error':
@@ -85,6 +84,7 @@ class MainGUI:
     def update_prediction_out(self, prediction):
         self.set_prediction(prediction)
         self.p_out_lbl['text'] = self.get_prediction()
+        self.p_out_lbl.update()
 
 
 root = Tk()
