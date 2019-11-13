@@ -37,33 +37,33 @@ class MainGUI:
 
         self.master = master
         master.title('Stock Predictor')
-        master.geometry('1000x800')
+        master.geometry('800x600')
 
         # creates label
         self.lbl = Label(master, text='Input Stock Ticker')
-        self.lbl.grid(column=0, row=0)
+        self.lbl.pack(side=TOP)
 
         # creates text field
         self.txt = Entry(master, width=10)
-        self.txt.grid(column=1, row=0)
+        self.txt.pack(side=TOP)
 
         # creates submission button
         self.btn = Button(master, text='Submit', command=self.clicked_tkr)
-        self.btn.grid(column=2, row=0)
-
-        # creates prediction explicit label
-        self.p_lbl = Label(master, text='Prediction: ')
-        self.p_lbl.grid(column=0, row=2)
+        self.btn.pack(side=TOP)
 
         # creates prediction output label
         self.p_out_lbl = Label(master, text=self.get_prediction())
-        self.p_out_lbl.grid(column=1, row=2)
+        self.p_out_lbl.pack(side=BOTTOM)
+
+        # creates prediction explicit label
+        self.p_lbl = Label(master, text='Prediction: ')
+        self.p_lbl.pack(side=BOTTOM)
 
     def disp_graph(self):
         fig = plt.Figure(figsize=(6, 5), dpi=100)
         ax = fig.add_subplot(111)
         line = FigureCanvasTkAgg(fig, self.master)
-        line.get_tk_widget().grid(column=0, row=4)
+        line.get_tk_widget().pack()
         self.df.plot(kind='line', legend=True, ax=ax)
         ax.set_title(f'Graph for {self.tkr.upper()}')
 
@@ -84,7 +84,7 @@ class MainGUI:
             else:
                 # creates and animates progress bar
                 progress = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
-                progress.grid(column=1, row=2)
+                progress.pack()
                 progress.start(10)
                 progress.update()
 
