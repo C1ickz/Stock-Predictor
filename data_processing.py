@@ -12,7 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 # This python file will process the data and train it.
 # No prediction will be done in here
 df = pd.read_csv('tesla.csv')  # TODO make so user can choose csv
-dataset = df['Adj Close'].values
+dataset = df['Adj Close']
 most_recent = pd.Timestamp(df['Date'].max())
 trainingRange = str(most_recent - dt.timedelta(days=20))
 train = df.loc[:trainingRange, ['Adj Close']]
@@ -53,10 +53,11 @@ model.fit(X_train, Y_train, validation_data=(X_test, Y_test),
           callbacks=[monitor], verbose=1, epochs=200)
 print("Shape of X_test", X_test.shape)
 # TODO Move code for predictions somewhere else
+dataset = dataset.values.reshape(len(dataset), 1)
 train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
-
 train_predict_plot = np.empty_like(dataset)
+print(train_predict_plot.shape)
 train_predict_plot[:, :] = np.nan
 train_predict_plot[5:len(train_predict) + 5, :] = train_predict
 
@@ -65,9 +66,9 @@ test_predict_plot[:, :] = np.nan
 test_predict_plot[len(train_predict) + (5*2)+1: len(dataset) -1, :] = test_predict
 plt.title("Stocks for TSLA")
 
-plt.plot(test)
 print(test)
-
+plt.plot(train_predict_plot)
+plt.plot(test_predict_plot)
 plt.tight_layout()
 plt.gcf().autofmt_xdate()
 
