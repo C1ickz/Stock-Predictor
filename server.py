@@ -10,7 +10,7 @@ import datetime as dt
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.0.117'
+host = '192.168.0.107'
 
 port = 9998
 
@@ -52,6 +52,7 @@ def gather_data(tkr):
     start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
+    df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
     df = pickle.dumps(df)
     return df
 
@@ -75,3 +76,4 @@ while True:
     elif tkr_ending == 'r':
         curr_conn.sendall(gather_data(tkr))
     print('Send Successful')
+    print('***END TRANSMISSION***\n')
