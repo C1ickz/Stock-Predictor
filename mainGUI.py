@@ -23,7 +23,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.0.107'
+        self.host = '192.168.215.219'
         self.port = 9998
 
         # null dataframe var
@@ -59,13 +59,13 @@ class MainGUI:
         self.p_lbl = Label(master, text='Prediction: ')
         self.p_lbl.pack(side=BOTTOM)
 
-    def disp_graph(self):
-        fig = plt.Figure(figsize=(6, 5), dpi=100)
-        ax = fig.add_subplot(111)
-        line = FigureCanvasTkAgg(fig, self.master)
-        line.get_tk_widget().pack()
-        self.df.plot(kind='line', legend=True, ax=ax)
-        ax.set_title(f'Graph for {self.tkr.upper()}')
+    def get_graph(self):
+        pass
+
+    def g(self,df):
+        plt.plot(df)
+        plt.ylabel('some numbers')
+        plt.show()
 
     def clicked_tkr(self):
         ticker = ""
@@ -82,22 +82,27 @@ class MainGUI:
                 client_socket.close()
                 raise ValueError()
             else:
-                # creates and animates progress bar
-                progress = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
-                progress.pack()
-                progress.start(10)
-                progress.update()
-
                 self.tkr = ticker
-
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'r')
                 self.df = client_socket.receive()
                 client_socket.close()
                 print(self.df)
-                self.disp_graph()
+                self.get_graph()
 
-            # self.update_prediction_out(client_socket.receive()) # after Ryan finishes lstm prediction
+                fig = plt.Figure(figsize=(6, 5), dpi=100)
+                ax = fig.add_subplot(111)
+                line = FigureCanvasTkAgg(fig, self.master)
+                line.get_tk_widget().pack()
+                self.df.plot(kind='line', legend=True, ax=ax)
+                ax.set_title(f'Graph for {self.tkr.upper()}')
+                fig.set_figure(fig)
+                line.draw()
+
+                self.g(self.df)
+
+
+            self.update_prediction_out(90) # after Ryan finishes lstm prediction
 
         except ValueError as e:
             messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')

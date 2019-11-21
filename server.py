@@ -10,7 +10,7 @@ import datetime as dt
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.0.107'
+host = '192.168.215.219'
 
 port = 9998
 
