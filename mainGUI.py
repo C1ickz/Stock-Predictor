@@ -16,18 +16,14 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Progressbar, Button, Label, Entry
 from stockclient import StockPSocket
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from PIL import Image, ImageTk
 
 
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.215.219'
+        self.host = '192.168.0.117'
         self.port = 9998
-
-        # null dataframe var
-        self.df = None
 
         # sets up empty var for ticker
         self.tkr = ''
@@ -62,10 +58,16 @@ class MainGUI:
     def get_graph(self):
         pass
 
-    def g(self,df):
-        plt.plot(df)
-        plt.ylabel('some numbers')
-        plt.show()
+
+
+    def disp_graph(self):
+        img = Image.open('imgFile.png')
+        render = ImageTk.PhotoImage(img)
+        # create image label
+        img = Label(self.master, image=render)
+        img.image = render
+        img.place(x=5, y=90)
+
 
     def clicked_tkr(self):
         ticker = ""
@@ -87,20 +89,7 @@ class MainGUI:
                 client_socket.send_request(self.tkr + 'r')
                 self.df = client_socket.receive()
                 client_socket.close()
-                print(self.df)
-                self.get_graph()
-
-                fig = plt.Figure(figsize=(6, 5), dpi=100)
-                ax = fig.add_subplot(111)
-                line = FigureCanvasTkAgg(fig, self.master)
-                line.get_tk_widget().pack()
-                self.df.plot(kind='line', legend=True, ax=ax)
-                ax.set_title(f'Graph for {self.tkr.upper()}')
-                fig.set_figure(fig)
-                line.draw()
-
-                self.g(self.df)
-
+                self.disp_graph()
 
             self.update_prediction_out(90) # after Ryan finishes lstm prediction
 

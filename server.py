@@ -1,16 +1,15 @@
 # echo server
 import socket
-import pickle
 import pandas_datareader as web
 import datetime as dt
+import matplotlib.pyplot as plt
+import os
 
 # creates server socket
-
-
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.215.219'
+host = '192.168.0.117'
 
 port = 9998
 
@@ -53,8 +52,23 @@ def gather_data(tkr):
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
     df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
-    df = pickle.dumps(df)
-    return df
+    img = make_g(tkr, df)
+    return img
+    #df = pickle.dumps(df)
+
+    #return df
+
+
+def make_g(tkr, df):
+    df.plot(kind='line')
+    plt.title(f'Stock Price of {tkr}')
+    plt.savefig('StockGraphForDisp.png')
+    plt.ylabel('Price($)')
+    with open('StockGraphForDisp.png', 'rb') as f:
+        by = f.read()
+    os.remove('StockGraphForDisp.png')
+    return by
+
 
 
 # print at start
@@ -64,8 +78,8 @@ while True:
     curr_conn, addr = serverS.accept()
     print(f'Log: connection made by: {addr}')
     tkr = curr_conn.recv(2048).decode('UTF-8')
-    tkr_ending = tkr[len(tkr)-1:len(tkr)]
-    tkr = tkr[0:len(tkr)-1]
+    tkr_ending = tkr[len(tkr) - 1:len(tkr)]
+    tkr = tkr[0:len(tkr) - 1]
     print(tkr, tkr_ending)
 
     if tkr_ending == 'p':
