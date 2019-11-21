@@ -12,6 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 # This python file will process the data and train it.
 # No prediction will be done in here
 df = pd.read_csv('tesla.csv')  # TODO make so user can choose csv
+df = df.set_index(df['Date'])
 dataset = df['Adj Close']
 most_recent = pd.Timestamp(df['Date'].max())
 trainingRange = str(most_recent - dt.timedelta(days=20))
@@ -20,7 +21,6 @@ test = df.loc[trainingRange:, ['Adj Close']]
 scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
 train_scaled = scaler.fit_transform(train)
 test_scaled = scaler.transform(test)
-
 
 def to_sequences(seq_size, obs):
     x = []
@@ -56,6 +56,8 @@ print("Shape of X_test", X_test.shape)
 dataset = dataset.values.reshape(len(dataset), 1)
 train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
+train_predict = scaler.inverse_transform(train_predict)
+test_predict = scaler.inverse_transform(test_predict)
 train_predict_plot = np.empty_like(dataset)
 print(train_predict_plot.shape)
 train_predict_plot[:, :] = np.nan
@@ -66,10 +68,12 @@ test_predict_plot[:, :] = np.nan
 test_predict_plot[len(train_predict) + (5*2)+1: len(dataset) -1, :] = test_predict
 plt.title("Stocks for TSLA")
 
-print(test)
-plt.plot(train_predict_plot)
-plt.plot(test_predict_plot)
+print(f"Test predict plots shape is {test_predict_plot.shape}")
+plt.plot(df['Date'],train_predict_plot)
+plt.plot(test)
+plt.plot(df['Date'],test_predict_plot)
 plt.tight_layout()
 plt.gcf().autofmt_xdate()
+
 
 plt.show()
