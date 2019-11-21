@@ -16,18 +16,14 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Progressbar, Button, Label, Entry
 from stockclient import StockPSocket
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from PIL import Image, ImageTk
 
 
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.0.107'
+        self.host = '192.168.0.117'
         self.port = 9998
-
-        # null dataframe var
-        self.df = None
 
         # sets up empty var for ticker
         self.tkr = ''
@@ -59,13 +55,16 @@ class MainGUI:
         self.p_out_lbl = Label(master, text=self.get_prediction())
         self.p_out_lbl.grid(column=1, row=2)
 
+
+
     def disp_graph(self):
-        fig = plt.Figure(figsize=(6, 5), dpi=100)
-        ax = fig.add_subplot(111)
-        line = FigureCanvasTkAgg(fig, self.master)
-        line.get_tk_widget().grid(column=0, row=4)
-        self.df.plot(kind='line', legend=True, ax=ax)
-        ax.set_title(f'Graph for {self.tkr.upper()}')
+        img = Image.open('imgFile.png')
+        render = ImageTk.PhotoImage(img)
+        # create image label
+        img = Label(self.master, image=render)
+        img.image = render
+        img.place(x=5, y=90)
+
 
     def clicked_tkr(self):
         ticker = ""
@@ -82,19 +81,12 @@ class MainGUI:
                 client_socket.close()
                 raise ValueError()
             else:
-                # creates and animates progress bar
-                progress = Progressbar(orient=HORIZONTAL, length=100, mode='indeterminate')
-                progress.grid(column=1, row=2)
-                progress.start(10)
-                progress.update()
-
                 self.tkr = ticker
 
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'r')
                 self.df = client_socket.receive()
                 client_socket.close()
-                print(self.df)
                 self.disp_graph()
 
             # self.update_prediction_out(client_socket.receive()) # after Ryan finishes lstm prediction

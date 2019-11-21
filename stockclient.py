@@ -51,8 +51,8 @@ class StockPSocket:
             except Exception:
                 pass
         rec = b''.join(data)
-        df = pickle.loads(rec)
-        return df
+        with open('imgFile.png', 'wb') as f:
+            f.write(rec)
 
     def close(self):
         self.s.close()
