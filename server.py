@@ -9,7 +9,7 @@ import os
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.0.117'
+host = '192.168.216.18'
 
 port = 9998
 

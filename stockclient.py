@@ -1,6 +1,5 @@
 import socket
 import time
-import pickle
 
 
 class StockPSocket:
