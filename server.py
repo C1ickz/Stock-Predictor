@@ -54,21 +54,16 @@ def gather_data(tkr):
     df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
     img = make_g(tkr, df)
     return img
-    #df = pickle.dumps(df)
-
-    #return df
 
 
 def make_g(tkr, df):
     df.plot(kind='line')
     plt.title(f'Stock Price of {tkr}')
     plt.savefig('StockGraphForDisp.png')
-    plt.ylabel('Price($)')
     with open('StockGraphForDisp.png', 'rb') as f:
         by = f.read()
     os.remove('StockGraphForDisp.png')
     return by
-
 
 
 # print at start
