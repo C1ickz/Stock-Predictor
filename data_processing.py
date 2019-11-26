@@ -18,7 +18,7 @@ most_recent = pd.Timestamp(df['Date'].max())
 trainingRange = str(most_recent - dt.timedelta(days=40))
 train = df.loc[:trainingRange, ['Adj Close']]
 test = df.loc[trainingRange:, ['Adj Close']]
-scaler = MinMaxScaler(feature_range=(-1, 1))  # set values between 0 and 1
+scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
 train_scaled = scaler.fit_transform(train)
 test_scaled = scaler.transform(test)
 
@@ -27,7 +27,7 @@ def to_sequences(obs, window_size):
     x = []
     y = []
 
-    for i in range(len(obs) - window_size - 1):
+    for i in range(len(obs) - window_size ): # -1
         window = obs[i:(i + window_size)]
         x.append(window)
         y.append(obs[i + window_size])
@@ -60,18 +60,20 @@ print("Shape of X_test", X_test.shape)
 
 
 dataset = dataset.reshape(len(dataset), 1)
+print(f"{len(train)} {len(test)}")
+print(f"{X_train.shape} {X_test.shape}")
 train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
 train_predict = scaler.inverse_transform(train_predict)
 test_predict = scaler.inverse_transform(test_predict)
 train_predict_plot = np.empty_like(dataset)
-print(train_predict_plot.shape)
+print(f"{train_predict.shape} to {test_predict.shape} to {len(dataset)}")
 train_predict_plot[:, :] = np.nan
 train_predict_plot[5:len(train_predict) + 5, :] = train_predict
 
 test_predict_plot = np.empty_like(dataset)
 test_predict_plot[:, :] = np.nan
-test_predict_plot[len(train_predict) + (5 * 2) + 2: len(dataset) , :] = test_predict
+test_predict_plot[len(train_predict) + (5 * 2) : len(dataset) , :] = test_predict
 
 plt.title("Stocks for TSLA")
 
