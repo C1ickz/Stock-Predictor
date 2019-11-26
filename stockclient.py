@@ -41,7 +41,7 @@ class StockPSocket:
             if time.time() - begin > 3:
                 break
             try:
-                inp = self.s.recv(2048)
+                inp = self.s.recv(4096)
                 if inp:
                     data.append(inp)
                     begin = time.time()

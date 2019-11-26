@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.216.18'
+        self.host = '10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -87,14 +87,17 @@ class MainGUI:
                 self.tkr = ticker
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'r')
-                self.df = client_socket.receive()
+                client_socket.receive()
                 client_socket.close()
                 self.disp_graph()
 
             self.update_prediction_out(90) # after Ryan finishes lstm prediction
 
-        except ValueError as e:
+        except ValueError as VE:
             messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')
+        except ConnectionRefusedError as CRE:
+            messagebox.showinfo('Server Offline', 'Sorry for the inconvenience, but this service is not available '
+                                                  'right now.')
 
     def set_prediction(self, prediction):
         self.prediction = prediction

@@ -9,7 +9,7 @@ import os
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.216.18'
+host = '10.18.207.18'
 
 port = 9998
 
@@ -58,7 +58,7 @@ def gather_data(tkr):
 
 def make_g(tkr, df):
     df.plot(kind='line')
-    plt.title(f'Stock Price of {tkr}')
+    plt.title(f'Stock Price of {tkr.upper()}')
     plt.savefig('StockGraphForDisp.png')
     with open('StockGraphForDisp.png', 'rb') as f:
         by = f.read()
