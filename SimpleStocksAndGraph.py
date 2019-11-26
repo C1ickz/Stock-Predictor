@@ -34,7 +34,7 @@ def gatherData():
     try:
         ticker = input("input ticker: ").upper()
         df = web.DataReader(ticker, 'yahoo', start, end)
-        df.to_csv(file)
+        df.to_csv(f'datasets/{file}')
 
         return df, ticker
 
