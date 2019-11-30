@@ -7,6 +7,6 @@ This program features a graphical user interface that connects to a server to fe
 ## Execution Instructions
 ### Option 1
 - Windows: <code>python mainGUI.py</code>
-- Apple and Linux: <code>python3 mainGUI.py</code>
+- macOS and Linux: <code>python3 mainGUI.py</code>
 ### Option 2
 - Double click on mainGUI.py to execute using the Python 3 interpreter
