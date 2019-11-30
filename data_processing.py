@@ -11,11 +11,13 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 # This python file will process the data and train it.
 # No prediction will be done in here
-df = pd.read_csv('datasets/tesla.csv')  # TODO make so user can choose csv
-df = df.set_index(df['Date'])
-dataset = df['Adj Close'].values
+df = pd.read_csv('tesla.csv')  # TODO make so user can choose csv
+print(df['Date'])
+df = df.set_index('Date')
+dataset = list(zip(df['Date'].values,df['Adj Close'].values))
+print(dataset)
 most_recent = pd.Timestamp(df['Date'].max())
-trainingRange = str(most_recent - dt.timedelta(days=40))
+trainingRange = str(most_recent - dt.timedelta(days=30))
 train = df.loc[:trainingRange, ['Adj Close']]
 test = df.loc[trainingRange:, ['Adj Close']]
 scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
@@ -48,8 +50,9 @@ model.add(LSTM(16, input_shape=(X_train.shape[1], 1), activation='relu'))
 model.add(Dropout(.2))
 model.add(Dense(1, activation='linear'))
 model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy']) # adagrad?
-monitor = EarlyStopping(monitor='loss', min_delta=1e-3, patience=10,
-                        verbose=1, mode='auto', restore_best_weights=True)
+monitor = EarlyStopping(monitor='loss',
+                        patience=10,
+                        verbose=1, restore_best_weights=True)
 
 model.fit(X_train, Y_train, validation_data=(X_test, Y_test),
           callbacks=[monitor], verbose=1, epochs=200)
@@ -57,9 +60,9 @@ print("Shape of X_test", X_test.shape)
 
 
 # TODO Move code for predictions somewhere else
-
-
-dataset = dataset.reshape(len(dataset), 1)
+original = pd.DataFrame(dataset, columns=['Date','Adj Close'])
+original = original.set_index('Date')
+print(original)
 print(f"{len(train)} {len(test)}")
 print(f"{X_train.shape} {X_test.shape}")
 train_predict = model.predict(X_train)
@@ -73,13 +76,11 @@ train_predict_plot[5:len(train_predict) + 5, :] = train_predict
 
 test_predict_plot = np.empty_like(dataset)
 test_predict_plot[:, :] = np.nan
-test_predict_plot[len(train_predict) + (5 * 2) : len(dataset) , :] = test_predict
-
+test_predict_plot[len(train_predict) + (5 * 2) : len(dataset), :] = test_predict
 plt.title("Stocks for TSLA")
 
 print(f"Test predict plots shape is {test_predict_plot.shape}")
-plt.plot(df['Date'], train_predict_plot)
-plt.plot(df['Date'], test_predict_plot)
+df['Adj Close'].plot()
 plt.tight_layout()
 plt.gcf().autofmt_xdate()
 

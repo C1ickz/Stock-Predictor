@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import datetime as dt
 from glob import glob
 import datetime
-from progress.bar import Bar
 
 
 
@@ -16,7 +15,7 @@ def gatherData():
     month = d.month
     day = d.day
 
-    start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
+    start = dt.datetime(2015, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
 
     response = input('Would you like write data to a new file(y or n)? ').upper()
@@ -34,7 +33,7 @@ def gatherData():
     try:
         ticker = input("input ticker: ").upper()
         df = web.DataReader(ticker, 'yahoo', start, end)
-        df.to_csv(f'datasets/{file}')
+        df.to_csv(file)
 
         return df, ticker
 
@@ -48,8 +47,6 @@ def displayGraph(df):
     ticker = df[1]
     wantToSee = input("Do you want to see the graph?(y or n): ")
     if wantToSee == 'y':
-        fig = plt.figure(f"Graph of {ticker}'s Stock History")
-        plt.style.use('ggplot')
         df[0]["Adj Close"].plot()
         plt.title(f"Stock Prices of {ticker}")
         plt.ylabel("Price ($)")
