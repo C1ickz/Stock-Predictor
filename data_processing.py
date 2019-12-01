@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import EarlyStopping
 # This python file will process the data and train it.
 # No prediction will be done in here
 df = pd.read_csv('tesla.csv')  # TODO make so user can choose csv
+df['Date'] = pd.to_datetime(df['Date'])
 print(df['Date'])
-df = df.set_index('Date')
 dataset = list(zip(df['Date'].values,df['Adj Close'].values))
 print(dataset)
 most_recent = pd.Timestamp(df['Date'].max())
@@ -25,14 +25,14 @@ train_scaled = scaler.fit_transform(train)
 test_scaled = scaler.transform(test)
 
 
-def to_sequences(obs, window_size):
+def to_sequences(data, window_size):
     x = []
     y = []
 
-    for i in range(len(obs) - window_size ): # -1
-        window = obs[i:(i + window_size)]
+    for i in range(len(data) - window_size -1):
+        window = data[i:(i + window_size),0]
         x.append(window)
-        y.append(obs[i + window_size])
+        y.append(data[i + window_size, 0])
     return np.array(x), np.array(y)
 
 
@@ -80,7 +80,9 @@ test_predict_plot[len(train_predict) + (5 * 2) : len(dataset), :] = test_predict
 plt.title("Stocks for TSLA")
 
 print(f"Test predict plots shape is {test_predict_plot.shape}")
-df['Adj Close'].plot()
+plt.plot(df['Date'], df['Adj Close'])
+plt.xlabel('Date')
+plt.ylabel('Adj Close Price')
 plt.tight_layout()
 plt.gcf().autofmt_xdate()
 
