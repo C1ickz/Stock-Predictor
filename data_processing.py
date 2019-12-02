@@ -16,13 +16,12 @@ df['Date'] = pd.to_datetime(df['Date'])
 dataset = list(zip(df['Date'], df['Adj Close'].values))
 most_recent = pd.Timestamp(df['Date'].max())
 print(most_recent)
-trainingRange = str(most_recent -  dt.timedelta(days=20))
+trainingRange = str(most_recent -  dt.timedelta(days=30))
 print(f"Train is using the data between {df['Date'].min()} and {(most_recent - dt.timedelta(days=20))}")
 print(f"Test is using the data between {most_recent - dt.timedelta(days=20)} and {most_recent}")
-trainingRange = str(trainingRange.split(" ", 1)[0])
-print("Training range =", trainingRange)
-train = df.loc[:'2019-10-17', 'Adj Close']
-#test = df.loc[trainingRange:, df['Adj Close']]
+print(f"The training range{(most_recent - (most_recent- dt.timedelta(days=20))).days} days")
+train = df.loc[:trainingRange, ['Adj Close']]
+test = df.loc[trainingRange:, ['Adj Close']]
 print(len(train))
 scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
 train_scaled = scaler.fit_transform(train)
