@@ -15,7 +15,7 @@ def gatherData():
     month = d.month
     day = d.day
 
-    start = dt.datetime(2015, 1, 3)  # (YEAR, MONTH, DAY)
+    start = dt.datetime(2017, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
 
     response = input('Would you like write data to a new file(y or n)? ').upper()
