@@ -55,11 +55,6 @@ class MainGUI:
         self.p_lbl = Label(master, text='Prediction: ')
         self.p_lbl.pack(side=BOTTOM)
 
-    def get_graph(self):
-        pass
-
-
-
     def disp_graph(self):
         img = Image.open('imgFile.png')
         render = ImageTk.PhotoImage(img)
@@ -67,7 +62,6 @@ class MainGUI:
         img = Label(self.master, image=render)
         img.image = render
         img.place(x=75, y=70)
-
 
     def clicked_tkr(self):
         ticker = ""
@@ -82,16 +76,24 @@ class MainGUI:
             client_socket = StockPSocket(self.host, self.port)
             if client_socket.validate(ticker + 'v') == 'error':
                 client_socket.close()
+                self.update_prediction_out('Invalid input')
                 raise ValueError()
             else:
                 self.tkr = ticker
+                # gets graph of stock
                 client_socket = StockPSocket(self.host, self.port)
-                client_socket.send_request(self.tkr + 'r')
+                client_socket.send_request(self.tkr + 'g')
                 client_socket.receive()
                 client_socket.close()
                 self.disp_graph()
 
-            self.update_prediction_out(90) # after Ryan finishes lstm prediction
+                # gets predicted value of stock
+                client_socket = StockPSocket(self.host, self.port)
+                client_socket.send_request(self.tkr + 'p')
+                prediction = client_socket.rec_pred()
+                client_socket.close()
+                self.update_prediction_out(prediction)  # after Ryan finishes lstm prediction
+
 
         except ValueError as VE:
             messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')
@@ -112,5 +114,6 @@ class MainGUI:
 
 
 root = Tk()
+root.resizable(width=False, height=False)
 my_gui = MainGUI(root)
 root.mainloop()

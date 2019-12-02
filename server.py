@@ -18,9 +18,13 @@ serverS.bind((host, port))
 # queue up to 20 concurrent requests
 serverS.listen(20)
 
+# creates empty dataframe
+df = None
+
 
 def validate_tkr(tkr):
-    # block gets current date and sets appropriate variables
+    global df
+    # gets current date and sets appropriate variables
     end_d = dt.datetime.today()
     year = end_d.year
     month = end_d.month
@@ -41,6 +45,7 @@ def validate_tkr(tkr):
 
 # retrieves data from online server
 def gather_data(tkr):
+    global df
     print(tkr)
     # block gets current date and sets appropriate variables
     d = dt.datetime.today()
@@ -52,11 +57,13 @@ def gather_data(tkr):
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
     df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
-    img = make_g(tkr, df)
-    return img
+    return df  # this is only a df containing the dates and adj close value
 
 
-def make_g(tkr, df):
+# makes graph and returns file
+def make_g(tkr):
+    global df
+    df = gather_data(tkr)
     df.plot(kind='line')
     plt.title(f'Stock Price of {tkr.upper()}')
     plt.savefig('StockGraphForDisp.png')
@@ -64,6 +71,13 @@ def make_g(tkr, df):
         by = f.read()
     os.remove('StockGraphForDisp.png')
     return by
+
+
+def make_p(tkr):
+    global df
+    # add prediction code here
+    prediction = 1
+    return f'${prediction}'
 
 
 # print at start
@@ -76,13 +90,11 @@ while True:
     tkr_ending = tkr[len(tkr) - 1:len(tkr)]
     tkr = tkr[0:len(tkr) - 1]
     print(tkr, tkr_ending)
-
-    if tkr_ending == 'p':
-        pass  # this is where prediction method call will be placed
-    elif tkr_ending == 'v':
+    if tkr_ending == 'v':
         curr_conn.sendall(validate_tkr(tkr).encode('UTF-8'))
-        print('inv')
-    elif tkr_ending == 'r':
-        curr_conn.sendall(gather_data(tkr))
+    elif tkr_ending == 'g':
+        curr_conn.sendall(make_g(tkr))
+    elif tkr_ending == 'p':
+        curr_conn.sendall(make_p(tkr).encode('UTF-8'))
     print('Send Successful')
     print('***END TRANSMISSION***\n')

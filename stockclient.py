@@ -31,6 +31,11 @@ class StockPSocket:
     def send_request(self, request):
         self.s.sendall(request.encode('UTF-8'))
 
+    # receives prediction
+    def rec_pred(self):
+        pred = self.s.recv(1024).decode('UTF-8')
+        return pred
+
     # receives data from server
     def receive(self):
         self.s.setblocking(0)
