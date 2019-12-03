@@ -22,5 +22,6 @@ train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
 
 train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
-
+print(test_predict_plot)
+print(test_predict_plot[-2][0])
 graph_data(df, train_predict_plot, test_predict_plot)
