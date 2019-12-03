@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '10.18.207.18'
+        self.host = '192.168.56.1' #'10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -86,7 +86,6 @@ class MainGUI:
                 client_socket.send_request(self.tkr + 'g')
                 client_socket.receive()
                 client_socket.close()
-                self.disp_graph()
 
                 # gets predicted value of stock
                 client_socket = StockPSocket(self.host, self.port)
@@ -94,6 +93,7 @@ class MainGUI:
                 prediction = client_socket.rec_pred()
                 client_socket.close()
                 self.update_prediction_out(prediction)  # after Ryan finishes lstm prediction
+                self.disp_graph()
 
 
         except ValueError as VE:

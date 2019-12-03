@@ -4,12 +4,23 @@ import pandas_datareader as web
 import datetime as dt
 import matplotlib.pyplot as plt
 import os
+import tensorflow as tf
+from data_processor import data_loader
+from data_processor import train_test_split
+from data_processor import data_scaler
+from data_processor import generate_sets
+from data_processor import build_model
+from data_processor import graph_format
+from data_processor import graph_data
+
+
+
 
 # creates server socket
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.56.1' #10.18.207.18
 
 port = 9998
 
@@ -53,31 +64,61 @@ def gather_data(tkr):
     month = d.month
     day = d.day
 
-    start = dt.datetime(2010, 1, 3)  # (YEAR, MONTH, DAY)
+    start = dt.datetime(2017, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
+    fileName = 'datasets/' + tkr + '.csv'
     df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
+    df.to_csv(fileName)
     return df  # this is only a df containing the dates and adj close value
 
 
 # makes graph and returns file
 def make_g(tkr):
     global df
-    df = gather_data(tkr)
-    df.plot(kind='line')
-    plt.title(f'Stock Price of {tkr.upper()}')
-    plt.savefig('StockGraphForDisp.png')
-    with open('StockGraphForDisp.png', 'rb') as f:
+
+    df, dataset = data_loader('datasets/TSLA.csv')
+
+    train, test = train_test_split(df, dataset)
+
+    train_scaled, test_scaled = data_scaler(train, test)
+
+    X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
+
+    model = build_model(X_train, Y_train)
+
+    model.save('model.h5')
+    train_predict = model.predict(X_train)
+    test_predict = model.predict(X_test)
+
+    train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
+
+    graph_data(df, train_predict_plot, test_predict_plot)
+
+    # TODO: Save model in different part of the file and load it here
+
+    with open('imgFile.png', 'rb') as f:
         by = f.read()
-    os.remove('StockGraphForDisp.png')
     return by
 
 
 def make_p(tkr):
     global df
     # add prediction code here
-    prediction = 1
-    return f'${prediction}'
+    df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
+    train, test = train_test_split(df, dataset)
+    train_scaled, test_scaled = data_scaler(train, test)
+    X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
+
+    model = tf.keras.models.load_model("model.h5")
+
+    train_predict = model.predict(X_train)
+
+    test_predict = model.predict(X_test)
+    prediction = graph_format(dataset, train_predict, test_predict)[1]
+
+    prediction = prediction[-2][0]
+    return f'${round(prediction)}'
 
 
 # print at start
