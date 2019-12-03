@@ -20,7 +20,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.220.68'
 
 port = 9998
 
@@ -77,7 +77,7 @@ def gather_data(tkr):
 def make_g(tkr):
     global df
 
-    df, dataset = data_loader('datasets/TSLA.csv')
+    df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
 
     train, test = train_test_split(df, dataset)
 

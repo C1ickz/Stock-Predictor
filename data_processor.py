@@ -12,12 +12,24 @@ from tensorflow.keras.callbacks import EarlyStopping
 # This python file will process the data and train it.
 # No prediction will be done in here
 
-WINDOW_SIZE = 10
-scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
+WINDOW_SIZE = 10 # Sets a constant size for the rolling window used
+scaler = MinMaxScaler(feature_range=(0, 1))  # set all data values between 0 and 1
 
 
-def data_loader(filename):
-    df = pd.read_csv(filename)  # TODO make so user can choose csv
+def data_loader(filename: str) -> str:
+    """
+    Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
+
+    Args:
+        filename: String that represents the filename in csv format
+
+    Returns:
+        df: All stock information that was in the csv file that pandas read in
+        dataset: List of tuples for every date and close value. Tuples are in the format (Date, Adj Close)
+
+
+    """
+    df = pd.read_csv(filename)
     df['Date'] = pd.to_datetime(df['Date'])
     dataset = list(zip(df['Date'], df['Adj Close'].values))
 
@@ -25,6 +37,23 @@ def data_loader(filename):
 
 
 def train_test_split(df, dataset):
+    """
+     Splits data into train and test so it can be used in predictions
+
+     Args:
+         df: Any pandas dataframe that has been returned from the yahoo financial database
+         dataset: dataset value that was returned from the data_loader function
+
+     Returns:
+         train: Training data that the model will use to fit itself (used to help the program learn).
+         test: Data that will be hidden from model during training phase,
+         and will be used to predict how accurate the model is
+
+     #TODO: Make train_test_split work without the dataset
+
+
+     """
+
     trainingRange = int(len(dataset) - 20)
     print("The training range is", trainingRange)
     train = df['Adj Close'].iloc[:trainingRange].values
@@ -102,6 +131,7 @@ def graph_format(dataset, train_predict, test_predict):
 
 
 def graph_data(df, train_predict_plot, test_predict_plot):
+    # TOOD: Fix problem where a new graph is not made and instead it is just plotted on the same graph
     plt.title("Stocks for TSLA")
 
     print(f"Test predict plots shape is {test_predict_plot.shape}")
