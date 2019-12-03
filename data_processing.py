@@ -13,6 +13,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 # No prediction will be done in here
 
 WINDOW_SIZE = 10
+scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
 
 
 def data_loader(filename):
@@ -23,7 +24,7 @@ def data_loader(filename):
     return df, dataset
 
 
-def train_test_split(dataset, df):
+def train_test_split(df, dataset):
     trainingRange = int(len(dataset) - 20)
     print("The training range is", trainingRange)
     train = df['Adj Close'].iloc[:trainingRange].values
@@ -35,7 +36,6 @@ def train_test_split(dataset, df):
 
 
 def data_scaler(train, test):
-    scaler = MinMaxScaler(feature_range=(0, 1))  # set values between 0 and 1
     train_scaled = scaler.fit_transform(train)
     test_scaled = scaler.transform(test)
 
@@ -53,7 +53,7 @@ def to_sequences(data, window_size):
     return np.array(x), np.array(y)
 
 
-def prepare_data(train_scaled, test_scaled):
+def generate_sets(train_scaled, test_scaled):
     X_train, Y_train = to_sequences(train_scaled, WINDOW_SIZE)
     X_test, Y_test = to_sequences(test_scaled, WINDOW_SIZE)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -64,6 +64,8 @@ def prepare_data(train_scaled, test_scaled):
     print(f"X_tests shape is {X_test.shape} ; Y_Tests shape is {Y_test.shape}")
     print("================================================================================")
     print(X_train.shape, Y_train.shape)
+
+    return X_train, Y_train, X_test, Y_test
 
 
 def build_model(X_train, Y_train):
@@ -85,9 +87,9 @@ def save_model(model):
     return model
 
 
-# TODO Move code for predictions somewhere else
-
-def graph_format(train_predict, dataset):
+def graph_format(dataset, train_predict, test_predict):
+    train_predict = scaler.inverse_transform(train_predict)
+    test_predict = scaler.inverse_transform(test_predict)
     train_predict_plot = np.empty_like(dataset)
     train_predict_plot[:, :] = np.nan
     train_predict_plot[WINDOW_SIZE:len(train_predict) + WINDOW_SIZE, :] = train_predict
@@ -96,8 +98,10 @@ def graph_format(train_predict, dataset):
     test_predict_plot[:, :] = np.nan
     test_predict_plot[len(train_predict) + (WINDOW_SIZE * 2) + 1: len(dataset) - 1, :] = test_predict
 
+    return train_predict_plot, test_predict_plot
 
-def graph_data(train_predict_plot, test_predict_plot):
+
+def graph_data(df, train_predict_plot, test_predict_plot):
     plt.title("Stocks for TSLA")
 
     print(f"Test predict plots shape is {test_predict_plot.shape}")
