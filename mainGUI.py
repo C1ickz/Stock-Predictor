@@ -11,10 +11,10 @@
 #
 # NOTE: The server object was also designed and implemented
 # by Jordan Davis and Ryan Harris.
-
+import os
 from tkinter import *
 from tkinter import messagebox
-from tkinter.ttk import Progressbar, Button, Label, Entry
+from tkinter.ttk import Button, Label, Entry
 from stockclient import StockPSocket
 from PIL import Image, ImageTk
 
@@ -62,6 +62,7 @@ class MainGUI:
         img = Label(self.master, image=render)
         img.image = render
         img.place(x=75, y=70)
+        os.remove('imgFile.png')
 
     def clicked_tkr(self):
         ticker = ""
