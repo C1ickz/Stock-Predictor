@@ -81,7 +81,7 @@ def make_g(tkr):
 
     train, test = train_test_split(df, dataset)
 
-    train_scaled, test_scaled = data_scaler(train, test)
+    train_scaled, test_scaled = data_scaler('fit', train, test)
 
     X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
 
@@ -104,10 +104,10 @@ def make_g(tkr):
 
 def make_p(tkr):
     global df
-    # add prediction code here
+
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
     train, test = train_test_split(df, dataset)
-    train_scaled, test_scaled = data_scaler(train, test)
+    train_scaled, test_scaled = data_scaler('fit', train, test)
     X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
 
     model = tf.keras.models.load_model("model.h5")

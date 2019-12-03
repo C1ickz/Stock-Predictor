@@ -12,7 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 # This python file will process the data and train it.
 # No prediction will be done in here
 
-WINDOW_SIZE = 10 # Sets a constant size for the rolling window used
+WINDOW_SIZE = 10  # Sets a constant size for the rolling window used
 scaler = MinMaxScaler(feature_range=(0, 1))  # set all data values between 0 and 1
 
 
@@ -64,9 +64,15 @@ def train_test_split(df, dataset):
     return train, test
 
 
-def data_scaler(train, test):
-    train_scaled = scaler.fit_transform(train)
-    test_scaled = scaler.transform(test)
+def data_scaler(action, train, test):
+
+    if action.lower() == 'fit':
+        train_scaled = scaler.fit_transform(train)
+        test_scaled = scaler.transform(test)
+
+    elif action.lower() == 'inverse':
+        train_scaled = scaler.inverse_transform(train)
+        test_scaled = scaler.inverse_transform(test)
 
     return train_scaled, test_scaled
 
@@ -117,8 +123,7 @@ def save_model(model):
 
 
 def graph_format(dataset, train_predict, test_predict):
-    train_predict = scaler.inverse_transform(train_predict)
-    test_predict = scaler.inverse_transform(test_predict)
+    train_predict, test_predict = data_scaler('inverse', train_predict, test_predict)
     train_predict_plot = np.empty_like(dataset)
     train_predict_plot[:, :] = np.nan
     train_predict_plot[WINDOW_SIZE:len(train_predict) + WINDOW_SIZE, :] = train_predict
@@ -144,5 +149,3 @@ def graph_data(df, train_predict_plot, test_predict_plot):
     plt.tight_layout()
     plt.gcf().autofmt_xdate()
     plt.savefig('imgFile.png')
-
-
