@@ -11,7 +11,7 @@ This program features a graphical user interface that connects to a custom serve
 ### Option 2
 - Double click on mainGUI.py to execute using the Python 3 interpreter
 ## Server Execution Instructions
-- Important: server.py file must be executed on weberkcudafac as this machine as static ip
+- Important: server.py file must be executed on weberkcudafac, since this machine has a static ip and that ip is the default for the server
 - To execute: enter the terminal and input <code>python3 server.py</code>
 - To kill: enter <code>ctrl+c</code>
 ## Authors
