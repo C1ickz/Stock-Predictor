@@ -6,7 +6,7 @@ from data_processor import build_model
 from data_processor import graph_format
 from data_processor import graph_data
 
-df, dataset = data_loader('tesla.csv')
+df, dataset = data_loader('datasets/TSLA.csv')
 
 train, test = train_test_split(df, dataset)
 

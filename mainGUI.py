@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '10.18.207.18'
+        self.host = '192.168.220.68'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -62,6 +62,7 @@ class MainGUI:
         img = Label(self.master, image=render)
         img.image = render
         img.place(x=75, y=70)
+        os.remove('imgFile.png')
 
     def clicked_tkr(self):
         ticker = ""
