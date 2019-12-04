@@ -95,7 +95,7 @@ def make_g(tkr):
 
     train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
 
-    graph_data(df, train_predict_plot, test_predict_plot)
+    graph_data(df, train_predict_plot, test_predict_plot, tkr)
 
     # TODO: Save model in different part of the file and load it here
 
