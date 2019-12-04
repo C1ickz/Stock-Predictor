@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.220.68'
+        self.host = '192.168.1.38'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -92,7 +92,7 @@ class MainGUI:
                 client_socket.send_request(self.tkr + 'p')
                 prediction = client_socket.rec_pred()
                 client_socket.close()
-                self.update_prediction_out(prediction)  # after Ryan finishes lstm prediction
+                self.update_prediction_out(prediction)
                 self.disp_graph()
 
 

@@ -20,7 +20,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.220.68'
+host = '192.168.1.38'
 
 port = 9998
 
@@ -77,6 +77,8 @@ def gather_data(tkr):
 def make_g(tkr):
     global df
 
+    gather_data(tkr)
+
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
 
     train, test = train_test_split(df, dataset)
@@ -99,6 +101,9 @@ def make_g(tkr):
 
     with open('imgFile.png', 'rb') as f:
         by = f.read()
+        print("THIS IS SERVER ")
+        print(by)
+        print("=============================================")
     return by
 
 
