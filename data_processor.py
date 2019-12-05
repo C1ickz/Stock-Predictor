@@ -1,5 +1,6 @@
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
+
 import datetime as dt
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,6 +16,23 @@ from typing import NoReturn, Tuple
 
 WINDOW_SIZE = 10  # Sets a constant size for the rolling window used
 scaler = MinMaxScaler(feature_range=(0, 1))  # set all data values between 0 and 1
+
+
+# retrieves data from online server
+def gather_data(tkr):
+    global df
+    print(tkr)
+    # block gets current date and sets appropriate variables
+    d = dt.datetime.today()
+    year = d.year
+    month = d.month
+    day = d.day
+
+    start = dt.datetime(2017, 1, 3)  # (YEAR, MONTH, DAY)
+    end = dt.datetime(year, month, day)
+    df = web.DataReader(tkr, 'yahoo', start, end)
+    fileName = 'datasets/' + tkr + '.csv'
+    df.to_csv(fileName)
 
 
 def data_loader(filename: str) -> Tuple[pd.DataFrame, list]:
