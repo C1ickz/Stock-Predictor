@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.219.65'
 
 port = 9998
 
@@ -67,7 +67,6 @@ def gather_data(tkr):
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
     fileName = 'datasets/' + tkr + '.csv'
-    df = df.drop(['High', 'Low', 'Open', 'Close', 'Volume', ], axis=1)
     df.to_csv(fileName)
     return df  # this is only a df containing the dates and adj close value
 
@@ -76,7 +75,6 @@ def gather_data(tkr):
 def make_g(tkr):
     global df
 
-    gather_data(tkr)
 
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
 
@@ -110,6 +108,7 @@ def return_g():
 
 def make_p(tkr):
     global df
+    gather_data(tkr)
 
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
     train, test = train_test_split(df, dataset)

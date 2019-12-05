@@ -30,6 +30,7 @@ def data_loader(filename: str) -> Tuple[pd.DataFrame, list]:
 
 
     """
+
     df = pd.read_csv(filename)
     df['Date'] = pd.to_datetime(df['Date'])
     dataset = list(zip(df['Date'], df['Adj Close'].values))
@@ -82,10 +83,8 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
          test_scaled: If action == 'fit' {returns test_scaled array with all values scaled between 0 and one}
                       If action == 'inverse' {returns test_scaled array}
 
-
-
-
      """
+
     if action.lower() == 'fit':
         train_scaled = scaler.fit_transform(train)
         test_scaled = scaler.transform(test)
@@ -98,6 +97,7 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
 
 
 def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
+
     x = []
     y = []
 
@@ -144,6 +144,17 @@ def save_model(model):
 
 
 def graph_format(dataset: list, train_predict: np.ndarray, test_predict: np.ndarray) -> np.ndarray:
+    """
+    Function which formats train_predict and test_predict to be formattted for graphing in matplot
+
+    Args:
+        dataset:
+        train_predict: train predictions
+        test_predict: testing predictions
+
+    Returns:
+
+    """
     train_predict, test_predict = data_scaler('inverse', train_predict, test_predict)
     train_predict_plot = np.empty_like(dataset)
     train_predict_plot[:, :] = np.nan
