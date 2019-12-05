@@ -12,7 +12,7 @@ df, dataset = data_loader('tesla.csv')
 
 train, test = train_test_split(df, dataset)
 
-train_scaled, test_scaled = data_scaler(train, test)
+train_scaled, test_scaled = data_scaler('fit',train, test)
 
 X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
 
