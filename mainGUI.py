@@ -81,18 +81,21 @@ class MainGUI:
                 raise ValueError()
             else:
                 self.tkr = ticker
-                # gets graph of stock
-                client_socket = StockPSocket(self.host, self.port)
-                client_socket.send_request(self.tkr + 'g')
-                client_socket.receive()
-                client_socket.close()
 
                 # gets predicted value of stock
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'p')
                 prediction = client_socket.rec_pred()
                 client_socket.close()
-                self.update_prediction_out(prediction)
+                self.update_prediction_out(prediction)  # after Ryan finishes lstm prediction
+                print('end pred')
+
+                # gets graph of stock
+                client_socket = StockPSocket(self.host, self.port)
+                client_socket.send_request(self.tkr + 'g')
+                client_socket.receive()
+                client_socket.close()
+
                 self.disp_graph()
 
 
