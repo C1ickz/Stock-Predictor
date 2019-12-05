@@ -1,5 +1,7 @@
 # echo server
 import socket
+import time
+
 import pandas_datareader as web
 import datetime as dt
 import matplotlib.pyplot as plt
@@ -13,14 +15,11 @@ from data_processor import build_model
 from data_processor import graph_format
 from data_processor import graph_data
 
-
-
-
 # creates server socket
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.220.68'
+host = '10.18.207.18'
 
 port = 9998
 
@@ -93,12 +92,17 @@ def make_g(tkr):
 
     train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
 
-    graph_data(df, train_predict_plot, test_predict_plot)
+    graph_data(tkr, df, train_predict_plot, test_predict_plot)
 
     # TODO: Save model in different part of the file and load it here
+    g = return_g()
+    return g
 
-    with open('imgFile.png', 'rb') as f:
+
+def return_g():
+    with open('imgFile1.png', 'rb') as f:
         by = f.read()
+        print('=======in return_g()')
     return by
 
 
@@ -135,6 +139,7 @@ while True:
         curr_conn.sendall(validate_tkr(tkr).encode('UTF-8'))
     elif tkr_ending == 'g':
         curr_conn.sendall(make_g(tkr))
+        curr_conn.close()
     elif tkr_ending == 'p':
         curr_conn.sendall(make_p(tkr).encode('UTF-8'))
     print('Send Successful')

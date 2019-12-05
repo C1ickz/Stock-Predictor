@@ -38,22 +38,30 @@ class StockPSocket:
 
     # receives data from server
     def receive(self):
-        self.s.setblocking(0)
+        self.s.setblocking(1)
         data = []
         inp = ''
         begin = time.time()
+        print('before while')
         while True:
             if time.time() - begin > 3:
                 break
+            print('in while')
             try:
                 inp = self.s.recv(4096)
+                if not inp: break
                 if inp:
                     data.append(inp)
+
                     begin = time.time()
                 else:
                     time.sleep(0.1)
-            except Exception:
+
+            except Exception as e:
+                print(str(e))
+                break
                 pass
+        print('while has finished')
         rec = b''.join(data)
         with open('imgFile.png', 'wb') as f:
             f.write(rec)
