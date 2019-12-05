@@ -100,7 +100,7 @@ def make_g(tkr):
 
 
 def return_g():
-    with open('imgFile1.png', 'rb') as f:
+    with open('imgFile.png', 'rb') as f:
         by = f.read()
         print('=======in return_g()')
     return by
