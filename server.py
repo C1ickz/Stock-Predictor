@@ -76,6 +76,8 @@ def gather_data(tkr):
 def make_g(tkr):
     global df
 
+    gather_data(tkr)
+
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
 
     train, test = train_test_split(df, dataset)
@@ -92,7 +94,7 @@ def make_g(tkr):
 
     train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
 
-    graph_data(tkr, df, train_predict_plot, test_predict_plot)
+    graph_data(df, train_predict_plot, test_predict_plot, tkr)
 
     # TODO: Save model in different part of the file and load it here
     g = return_g()

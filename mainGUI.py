@@ -62,6 +62,7 @@ class MainGUI:
         img = Label(self.master, image=render)
         img.image = render
         img.place(x=75, y=70)
+        os.remove('imgFile.png')
 
     def clicked_tkr(self):
         ticker = ""
