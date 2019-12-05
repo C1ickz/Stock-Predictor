@@ -137,8 +137,8 @@ def graph_format(dataset, train_predict, test_predict):
 
 def graph_data(df, train_predict_plot, test_predict_plot, tkr):
     # TOOD: Fix problem where a new graph is not made and instead it is just plotted on the same graph
+    plt.clf()
     plt.title(f"Stocks for {tkr.upper()}")
-
     print(f"Test predict plots shape is {test_predict_plot.shape}")
     plt.plot(df['Date'], train_predict_plot, "-b", label="Train predict")
     plt.plot(df['Date'], test_predict_plot, "-y", label="Test predict")

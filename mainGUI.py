@@ -22,7 +22,7 @@ from PIL import Image, ImageTk
 class MainGUI:
     def __init__(self, master):
         # sets host and port of server
-        self.host = '192.168.1.38'
+        self.host = '10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
