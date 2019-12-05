@@ -8,6 +8,7 @@ import datetime
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.callbacks import EarlyStopping
+from typing import NoReturn, Tuple
 
 # This python file will process the data and train it.
 # No prediction will be done in here
@@ -16,7 +17,7 @@ WINDOW_SIZE = 10  # Sets a constant size for the rolling window used
 scaler = MinMaxScaler(feature_range=(0, 1))  # set all data values between 0 and 1
 
 
-def data_loader(filename: str) -> str:
+def data_loader(filename: str) -> Tuple[pd.DataFrame, list]:
     """
     Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
 
@@ -36,7 +37,7 @@ def data_loader(filename: str) -> str:
     return df, dataset
 
 
-def train_test_split(df, dataset):
+def train_test_split(df: pd.DataFrame, dataset: list) -> np.ndarray:
     """
      Splits data into train and test so it can be used in predictions
 
@@ -64,8 +65,27 @@ def train_test_split(df, dataset):
     return train, test
 
 
-def data_scaler(action, train, test):
+def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
+    """
+     Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
 
+     Args:
+         action: String that represents the filename in csv format
+         train: String that represents the filename in csv format
+         test: String that represents the filename in csv format
+
+
+     Returns:
+         train_scaled: All stock information that was in the csv file that pandas read in
+         dataset: List of tuples for every date and close value. Tuples are in the format (Date, Adj Close)
+
+         test_scaled: If action == 'fit' {returns test_scaled array with all values scaled between 0 and one}
+                      If action == 'inverse' {returns test_scaled array}
+
+
+
+
+     """
     if action.lower() == 'fit':
         train_scaled = scaler.fit_transform(train)
         test_scaled = scaler.transform(test)
@@ -77,7 +97,7 @@ def data_scaler(action, train, test):
     return train_scaled, test_scaled
 
 
-def to_sequences(data, window_size):
+def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
     x = []
     y = []
 
@@ -88,7 +108,7 @@ def to_sequences(data, window_size):
     return np.array(x), np.array(y)
 
 
-def generate_sets(train_scaled, test_scaled):
+def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarray:
     X_train, Y_train = to_sequences(train_scaled, WINDOW_SIZE)
     X_test, Y_test = to_sequences(test_scaled, WINDOW_SIZE)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -103,7 +123,8 @@ def generate_sets(train_scaled, test_scaled):
     return X_train, Y_train, X_test, Y_test
 
 
-def build_model(X_train, Y_train):
+def build_model(X_train: np.ndarray, Y_train: np.ndarray) -> tf.keras.models.Sequential:
+    # TODO: Make sure tensorflow-gpu is running in tensorflow2
     model = Sequential()
     model.add(LSTM(64, input_shape=(X_train.shape[1], 1), return_sequences=True, activation='relu'))
     model.add(Dropout(.2))
@@ -122,7 +143,7 @@ def save_model(model):
     return model
 
 
-def graph_format(dataset, train_predict, test_predict):
+def graph_format(dataset: list, train_predict: np.ndarray, test_predict: np.ndarray) -> np.ndarray:
     train_predict, test_predict = data_scaler('inverse', train_predict, test_predict)
     train_predict_plot = np.empty_like(dataset)
     train_predict_plot[:, :] = np.nan
@@ -135,9 +156,20 @@ def graph_format(dataset, train_predict, test_predict):
     return train_predict_plot, test_predict_plot
 
 
-def graph_data(df, train_predict_plot, test_predict_plot, tkr):
-    # TOOD: Fix problem where a new graph is not made and instead it is just plotted on the same graph
-    plt.clf()
+def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
+               test_predict_plot: np.ndarray, tkr: str) -> NoReturn:
+    """
+    Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
+
+    Args:
+        df: Pandas dataframe which contains original stock information
+        train_predict_plot: train predictions --in array formatted for plotting
+        test_predict_plot: testing predictions  --in array formatted for plotting
+        tkr: Stock ticker
+
+    """
+
+    plt.clf() # Clears currently plotted figure
     plt.title(f"Stocks for {tkr.upper()}")
     print(f"Test predict plots shape is {test_predict_plot.shape}")
     plt.plot(df['Date'], train_predict_plot, "-b", label="Train predict")
