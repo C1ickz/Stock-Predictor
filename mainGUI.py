@@ -62,7 +62,6 @@ class MainGUI:
         img = Label(self.master, image=render)
         img.image = render
         img.place(x=75, y=70)
-        os.remove('imgFile.png')
 
     def clicked_tkr(self):
         ticker = ""
@@ -93,10 +92,9 @@ class MainGUI:
                 # gets graph of stock
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'g')
+                self.disp_graph()
                 client_socket.receive()
                 client_socket.close()
-
-                self.disp_graph()
 
 
         except ValueError as VE:
