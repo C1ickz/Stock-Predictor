@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.219.65'
+host = '10.18.207.18'
 
 port = 9998
 
@@ -33,6 +33,13 @@ df = None
 
 
 def validate_tkr(tkr):
+    """
+     Verifies the tkr is valid by checking if data exists for it during the past 7 days
+     Args:
+        tkr: string stock ticker
+     Returns:
+        success' or 'error'
+     """
     global df
     # gets current date and sets appropriate variables
     end_d = dt.datetime.today()
@@ -55,6 +62,13 @@ def validate_tkr(tkr):
 
 # retrieves data from online server
 def gather_data(tkr):
+    """
+     Gathers data from yahoo finance and places it into a dataframe
+     Args:
+        tkr: string stock ticker
+     Returns:
+        df: a dataframe containing only the date and adjusted close price
+     """
     global df
     print(tkr)
     # block gets current date and sets appropriate variables
@@ -73,8 +87,14 @@ def gather_data(tkr):
 
 # makes graph and returns file
 def make_g(tkr):
+    """
+     Makes a graph of the current stock data and returns that binary data
+     Args:
+        tkr: string stock ticker
+     Returns:
+        g: binary .png file imgFile
+     """
     global df
-
 
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
 
@@ -100,6 +120,11 @@ def make_g(tkr):
 
 
 def return_g():
+    """
+     Opens imgFile.png and reads binary into by variable
+     Returns:
+        by: binary data that creates imgFile.png
+     """
     with open('imgFile.png', 'rb') as f:
         by = f.read()
         print('=======in return_g()')
@@ -130,6 +155,10 @@ def make_p(tkr):
 print('Waiting for connection...')
 
 while True:
+    """
+     Infinite loop to continuously listen for connections and process requests. It makes sure to strip off last 
+     character of received ticker as it is used in the decision making of method selection.
+     """
     curr_conn, addr = serverS.accept()
     print(f'Log: connection made by: {addr}')
     tkr = curr_conn.recv(2048).decode('UTF-8')

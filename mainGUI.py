@@ -21,8 +21,16 @@ from PIL import Image, ImageTk
 
 class MainGUI:
     def __init__(self, master):
+        """
+         Constructor: Creates the GUI and creates a socket
+         Args:
+            self: calling object
+            master: parent widget
+         Returns:
+            void
+         """
         # sets host and port of server
-        self.host = '192.168.219.65'
+        self.host = '10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -56,6 +64,13 @@ class MainGUI:
         self.p_lbl.pack(side=BOTTOM)
 
     def disp_graph(self):
+        """
+         Displays the image stored as imgFile.png to the GUI
+         Args:
+            self: calling object
+         Returns:
+            void
+         """
         img = Image.open('imgFile.png')
         render = ImageTk.PhotoImage(img)
         # create image label
@@ -64,6 +79,14 @@ class MainGUI:
         img.place(x=75, y=70)
 
     def clicked_tkr(self):
+        """
+         Gathers the input from self.txt, verifies it, then requests a prediction and a graph. It then finally calls
+         disp_graph(). Also handles server offline and invalid input cases.
+         Args:
+            self: calling object
+         Returns:
+            void
+         """
         ticker = ""
         try:
             if self.txt.get().strip():
@@ -92,10 +115,9 @@ class MainGUI:
                 # gets graph of stock
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'g')
-                self.disp_graph()
                 client_socket.receive()
                 client_socket.close()
-
+                self.disp_graph()
 
         except ValueError as VE:
             messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')
@@ -104,12 +126,35 @@ class MainGUI:
                                                   'right now.')
 
     def set_prediction(self, prediction):
+        """
+         Updates the prediction variable
+         Args:
+            self: calling object
+            prediction: int updated value
+         Returns:
+            void
+         """
         self.prediction = prediction
 
     def get_prediction(self):
+        """
+         Returns the current value stored in prediction
+         Args:
+            self: calling object
+         Returns:
+            prediction: int
+         """
         return self.prediction
 
     def update_prediction_out(self, prediction):
+        """
+         Updates the prediction label
+         Args:
+            self: calling object
+            prediction: int value for updated presiction
+         Returns:
+            void
+         """
         self.set_prediction(prediction)
         self.p_out_lbl['text'] = self.get_prediction()
         self.p_out_lbl.update()
