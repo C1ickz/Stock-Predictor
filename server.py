@@ -55,6 +55,7 @@ def validate_tkr(tkr):
     one_week_ago = dt.datetime(year, month, day)
     try:
         df = web.DataReader(tkr, 'yahoo', one_week_ago, end_d)
+        gather_data(tkr)
         return 'success'
     except Exception:
         return 'error'
@@ -80,7 +81,7 @@ def gather_data(tkr):
     start = dt.datetime(2017, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
     df = web.DataReader(tkr, 'yahoo', start, end)
-    fileName = 'datasets/' + tkr + '.csv'
+    fileName = 'datasets/' + tkr.upper() + '.csv'
     df.to_csv(fileName)
     return df  # this is only a df containing the dates and adj close value
 
@@ -133,7 +134,7 @@ def return_g():
 
 def make_p(tkr):
     global df
-    gather_data(tkr)
+
 
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
     train, test = train_test_split(df, dataset)
