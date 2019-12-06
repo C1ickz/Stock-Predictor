@@ -63,15 +63,19 @@ class MainGUI:
         self.p_lbl = Label(master, text='Prediction: ')
         self.p_lbl.pack(side=BOTTOM)
 
-    def disp_graph(self):
+    def disp_graph(self, wait=False):
         """
          Displays the image stored as imgFile.png to the GUI
          Args:
             self: calling object
+            wait: boolean True if waiting for image False if not
          Returns:
             void
          """
-        img = Image.open('imgFile.png')
+        if wait:
+            img = Image.open('waitImg.png')
+        else:
+            img = Image.open('imgFile.png')
         render = ImageTk.PhotoImage(img)
         # create image label
         img = Label(self.master, image=render)
@@ -103,7 +107,7 @@ class MainGUI:
                 raise ValueError()
             else:
                 self.tkr = ticker
-
+                self.disp_graph(wait=True)
                 # gets predicted value of stock
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'p')
