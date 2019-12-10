@@ -124,7 +124,8 @@ class MainGUI:
                 self.disp_graph()
 
         except ValueError as VE:
-            messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker.')
+            messagebox.showinfo('Invalid Ticker', 'Please enter a proper stock ticker. If you are trying to get data '
+                                                  'about a market index prefix the ticker with a ^ (ie. ^dji).')
         except ConnectionRefusedError as CRE:
             messagebox.showinfo('Server Offline', 'Sorry for the inconvenience, but this service is not available '
                                                   'right now.')
