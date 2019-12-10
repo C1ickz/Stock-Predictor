@@ -95,7 +95,6 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
 
 
 def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
-
     x = []
     y = []
 
@@ -178,8 +177,8 @@ def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
 
     """
 
-    plt.clf() # Clears currently plotted figure
-    plt.title(f"Stocks for {tkr.upper()}")
+    plt.clf()  # Clears currently plotted figure
+    plt.title(f"{tkr.upper()} Stock Information")
     print(f"Test predict plots shape is {test_predict_plot.shape}")
     plt.plot(df['Date'], train_predict_plot, "-b", label="Train predict")
     plt.plot(df['Date'], test_predict_plot, "-y", label="Test predict")

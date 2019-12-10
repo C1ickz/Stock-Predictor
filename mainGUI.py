@@ -55,13 +55,14 @@ class MainGUI:
         self.btn = Button(master, text='Submit', command=self.clicked_tkr)
         self.btn.pack(side=TOP)
 
+        # creates prediction explicit label
+        self.p_lbl = Label(master, text='Prediction(1 day in the future): ')
+        self.p_lbl.pack(side=TOP)
+
         # creates prediction output label
         self.p_out_lbl = Label(master, text=self.get_prediction())
-        self.p_out_lbl.pack(side=BOTTOM)
-
-        # creates prediction explicit label
-        self.p_lbl = Label(master, text='Prediction: ')
-        self.p_lbl.pack(side=BOTTOM)
+        self.p_out_lbl.config(font=17)
+        self.p_out_lbl.pack(side=TOP)
 
     def disp_graph(self, wait=False):
         """
@@ -80,7 +81,7 @@ class MainGUI:
         # create image label
         img = Label(self.master, image=render)
         img.image = render
-        img.place(x=75, y=70)
+        img.place(x=95, y=110)
 
     def clicked_tkr(self):
         """
@@ -108,6 +109,7 @@ class MainGUI:
             else:
                 self.tkr = ticker
                 self.disp_graph(wait=True)
+
                 # gets predicted value of stock
                 client_socket = StockPSocket(self.host, self.port)
                 client_socket.send_request(self.tkr + 'p')
