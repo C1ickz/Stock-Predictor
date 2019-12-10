@@ -1,7 +1,5 @@
 # echo server
 import socket
-import time
-
 import pandas_datareader as web
 import datetime as dt
 import matplotlib.pyplot as plt
@@ -129,6 +127,7 @@ def return_g():
     with open('imgFile.png', 'rb') as f:
         by = f.read()
         print('=======in return_g()')
+    os.remove('imgFile.png')
     return by
 
 
