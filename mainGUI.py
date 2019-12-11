@@ -73,15 +73,19 @@ class MainGUI:
          Returns:
             void
          """
-        if wait:
-            img = Image.open('waitImg.png')
-        else:
-            img = Image.open('imgFile.png')
-        render = ImageTk.PhotoImage(img)
-        # create image label
-        img = Label(self.master, image=render)
-        img.image = render
-        img.place(x=95, y=110)
+        try:
+            if wait:
+                img = Image.open('waitImg.png')
+            else:
+                img = Image.open('imgFile.png')
+            render = ImageTk.PhotoImage(img)
+            # create image label
+            img = Label(self.master, image=render)
+            img.image = render
+            img.place(x=95, y=110)
+        except OSError as OSE:
+            messagebox.showinfo('Graph Retrieval Failed', 'The graph requested was not received correctly. Please '
+                                                          'submit the request again.')
 
     def clicked_tkr(self):
         """
