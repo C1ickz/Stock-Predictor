@@ -1,5 +1,7 @@
 # echo server
 import socket
+import pandas as pd
+import numpy as np
 import pandas_datareader as web
 import datetime as dt
 import matplotlib.pyplot as plt
@@ -17,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.43.17'
 
 port = 9998
 
@@ -78,7 +80,16 @@ def gather_data(tkr):
 
     start = dt.datetime(2017, 1, 3)  # (YEAR, MONTH, DAY)
     end = dt.datetime(year, month, day)
+
     df = web.DataReader(tkr, 'yahoo', start, end)
+    for x in range(0, 5):
+
+        tempEnd = str(end + dt.timedelta(days = x))
+        tempEnd = tempEnd.split(" ")[0]
+        df = df.append(pd.Series(name=tempEnd))
+    df = df.fillna('nan')
+    print(df)
+
     fileName = 'datasets/' + tkr.upper() + '.csv'
     df.to_csv(fileName)
     return df  # this is only a df containing the dates and adj close value
@@ -134,7 +145,6 @@ def return_g():
 def make_p(tkr):
     global df
 
-
     df, dataset = data_loader(f'datasets/{tkr.upper()}.csv')
     train, test = train_test_split(df, dataset)
     train_scaled, test_scaled = data_scaler('fit', train, test)
@@ -146,9 +156,9 @@ def make_p(tkr):
 
     test_predict = model.predict(X_test)
     prediction = graph_format(dataset, train_predict, test_predict)[1]
-
+    print(prediction)
     prediction = prediction[-2][0]
-    return f'${round(prediction)}'
+    return f'${prediction}'
 
 
 # print at start
