@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.43.17'
+host = '10.18.207.18'
 
 port = 9998
 
@@ -157,7 +157,8 @@ def make_p(tkr):
     test_predict = model.predict(X_test)
     prediction = graph_format(dataset, train_predict, test_predict)[1]
     print(prediction)
-    prediction = prediction[-2][0]
+    prediction = prediction[-5][0]
+    prediction = round(prediction, 2)
     return f'${prediction}'
 
 

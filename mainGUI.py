@@ -30,7 +30,7 @@ class MainGUI:
             void
          """
         # sets host and port of server
-        self.host = '192.168.43.17'
+        self.host = '10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
