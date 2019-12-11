@@ -88,7 +88,6 @@ def gather_data(tkr):
         tempEnd = tempEnd.split(" ")[0]
         df = df.append(pd.Series(name=tempEnd))
     df = df.fillna('nan')
-    print(df)
 
     fileName = 'datasets/' + tkr.upper() + '.csv'
     df.to_csv(fileName)
@@ -137,7 +136,6 @@ def return_g():
      """
     with open('imgFile.png', 'rb') as f:
         by = f.read()
-        print('=======in return_g()')
     os.remove('imgFile.png')
     return by
 

@@ -88,11 +88,9 @@ class StockPSocket:
         data = []
         inp = ''
         begin = time.time()
-        print('before while')
         while True:
             if time.time() - begin > 3:
                 break
-            print('in while')
             try:
                 inp = self.s.recv(4096)
                 if not inp: break
@@ -107,7 +105,6 @@ class StockPSocket:
                 print(str(e))
                 break
                 pass
-        print('while has finished')
         rec = b''.join(data)
         with open('imgFile.png', 'wb') as f:
             f.write(rec)

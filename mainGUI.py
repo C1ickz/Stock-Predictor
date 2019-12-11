@@ -120,7 +120,6 @@ class MainGUI:
                 prediction = client_socket.rec_pred()
                 client_socket.close()
                 self.update_prediction_out(prediction)  # after Ryan finishes lstm prediction
-                print('end pred')
 
                 # gets graph of stock
                 client_socket = StockPSocket(self.host, self.port)
