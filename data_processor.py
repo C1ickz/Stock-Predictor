@@ -64,17 +64,17 @@ def train_test_split(df: pd.DataFrame, dataset: list) -> np.ndarray:
 
 def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
     """
-     Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
+    Function which scales the data between 0 and 1 or transforms it
 
      Args:
-         action: Action nee
-         train: String that represents the filename in csv format
-         test: String that represents the filename in csv format
+         action: Action of whether to iverse transform or scale data
+         train: training data
+         test: testing data
 
 
      Returns:
-         train_scaled: All stock information that was in the csv file that pandas read in
-         dataset: List of tuples for every date and close value. Tuples are in the format (Date, Adj Close)
+         train_scaled: If action == 'fit' {returns train_scaled array with all values scaled between 0 and one}
+                      If action == 'inverse' {returns train_scaled array}
 
          test_scaled: If action == 'fit' {returns test_scaled array with all values scaled between 0 and one}
                       If action == 'inverse' {returns test_scaled array}
@@ -95,6 +95,8 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
 def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
     """
     Converts data from 2D input data to timeseries 3D array.
+
+    For more info: https://datascience.stackexchange.com/questions/30762/how-to-predict-the-future-values-of-time-horizon-with-keras
 
     Args:
         window_size: Size of window of data
@@ -118,16 +120,19 @@ def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
 
 def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarray:
     """
-    Function which formats train_predict and test_predict to be formattted for graphing in matplot
+    Function which takes in train_scaled and test_scaled and puts it into four sets of data.
+
+    For more info: https://stackoverflow.com/questions/46495215/what-is-the-difference-between-x-train-and-x-test-in-keras
 
     Args:
-        dataset:
-        train_predict: train predictions
-        test_predict: testing predictions
+        train_scaled: training data scaled
+        test_scaled: testing data scaled
 
     Returns:
-        train_predict_plot:
-        test_predict_plot:
+        X_train: training data set
+        Y_train: Expected outcomes/labels of training data
+         X_test: Test data set
+        Y_test: Expected outcomes/label of test data
 
     """
 
@@ -147,15 +152,15 @@ def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarr
 
 def build_model(X_train: np.ndarray, Y_train: np.ndarray) -> tf.keras.models.Sequential:
     """
-    Function which formats train_predict and test_predict to be formattted for graphing in matplot
+    Function which builds the model for the predictions
 
     Args:
-        Y_train:
-        X_train:
+        X_train: training data set
+        Y_train: test data set
 
 
     Returns:
-        model:
+        model: Weights and biases learned from the training data
 
 
     """
@@ -178,13 +183,13 @@ def graph_format(dataset: list, train_predict: np.ndarray, test_predict: np.ndar
     Function which formats train_predict and test_predict to be formattted for graphing in matplot
 
     Args:
-        dataset:
-        train_predict: train predictions
+        dataset: Dates and Adj Close data stored into tuples
+        train_predict: training predictions
         test_predict: testing predictions
 
     Returns:
-        train_predict_plot:
-        test_predict_plot:
+        train_predict_plot: train_predict formatted for plotting
+        test_predict_plot: test_predict formatted for plotting
 
     """
     train_predict, test_predict = data_scaler('inverse', train_predict, test_predict)
