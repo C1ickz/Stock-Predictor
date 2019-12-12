@@ -1,6 +1,6 @@
 # Stock-Predictor
 ## Overview
-This program features a graphical user interface that connects to a custom server to fetch a predicted value for the inputted stock. It also features a graph of the inputted stock upon prediction completion. 
+This program features a graphical user interface that connects to a custom server to fetch a predicted value for the inputted stock. It uses a LSTM to make predictions and learns by using the mean squared error loss function. Predictions are graphed for the inputted stock upon prediction completion. 
 ## Project Download Instructions
 - Clone this repository
 - Execute the <code>pip install -r requirements.txt</code> command in your terminal (sudo or administrator privileges might be required)
