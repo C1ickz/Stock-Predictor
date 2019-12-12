@@ -1,10 +1,8 @@
 # echo server
 import socket
 import pandas as pd
-import numpy as np
 import pandas_datareader as web
 import datetime as dt
-import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
 from data_processor import data_loader

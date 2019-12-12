@@ -11,7 +11,6 @@
 #
 # NOTE: The server object was also designed and implemented
 # by Jordan Davis and Ryan Harris.
-import os
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Button, Label, Entry
