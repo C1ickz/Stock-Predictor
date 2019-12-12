@@ -3,6 +3,7 @@ from data_processor import train_test_split
 from data_processor import data_scaler
 from data_processor import generate_sets
 from data_processor import build_model
+import numpy
 
 # TODO: Move this to different file
 from data_processor import graph_format
@@ -22,6 +23,5 @@ train_predict = model.predict(X_train)
 test_predict = model.predict(X_test)
 
 train_predict_plot, test_predict_plot = graph_format(dataset, train_predict, test_predict)
-#print(test_predict_plot)
-#print(test_predict_plot[-2][0])
+print(test_predict_plot[-2][0])
 graph_data(df, train_predict_plot, test_predict_plot, 'TSLA')

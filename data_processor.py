@@ -29,8 +29,8 @@ def data_loader(filename: str) -> Tuple[pd.DataFrame, list]:
 
     """
 
-    df = pd.read_csv(filename)
-    df['Date'] = pd.to_datetime(df['Date'])
+    df = pd.read_csv(filename)  # converts pandas dataframe to csv
+    df['Date'] = pd.to_datetime(df['Date'])  # Puts all dates into datetime format
     dataset = list(zip(df['Date'], df['Adj Close'].values))
 
     return df, dataset
@@ -49,9 +49,6 @@ def train_test_split(df: pd.DataFrame, dataset: list) -> np.ndarray:
          test: Data that will be hidden from model during training phase,
          and will be used to predict how accurate the model is
 
-     #TODO: Make train_test_split work without the dataset
-
-
      """
 
     trainingRange = int(len(dataset) - 20)
@@ -60,6 +57,7 @@ def train_test_split(df: pd.DataFrame, dataset: list) -> np.ndarray:
     test = df['Adj Close'].iloc[trainingRange:].values
     train = np.reshape(train, (-1, 1))
     test = np.reshape(test, (-1, 1))
+    print(train)
 
     return train, test
 
@@ -69,7 +67,7 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
      Function which reads in data from a csv file and uses pandas to turn it into a dataframe.
 
      Args:
-         action: String that represents the filename in csv format
+         action: Action nee
          train: String that represents the filename in csv format
          test: String that represents the filename in csv format
 
@@ -95,17 +93,44 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
 
 
 def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
+    """
+    Converts data from 2D input data to timeseries 3D array.
+
+    Args:
+        window_size: Size of window of data
+        data: data being converted to sequence
+
+    Returns:
+        np.array(x): numpy array of x training data
+        np.array(y): numpy array of y training daata
+
+
+    """
     x = []
     y = []
 
     for i in range(len(data) - window_size - 1):
-        window = data[i:(i + window_size), 0]
+        window = data[i:(i + window_size)]
         x.append(window)
-        y.append(data[i + window_size, 0])
+        y.append(data[i + window_size])
     return np.array(x), np.array(y)
 
 
 def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarray:
+    """
+    Function which formats train_predict and test_predict to be formattted for graphing in matplot
+
+    Args:
+        dataset:
+        train_predict: train predictions
+        test_predict: testing predictions
+
+    Returns:
+        train_predict_plot:
+        test_predict_plot:
+
+    """
+
     X_train, Y_train = to_sequences(train_scaled, WINDOW_SIZE)
     X_test, Y_test = to_sequences(test_scaled, WINDOW_SIZE)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
@@ -121,7 +146,20 @@ def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarr
 
 
 def build_model(X_train: np.ndarray, Y_train: np.ndarray) -> tf.keras.models.Sequential:
-    # TODO: Make sure tensorflow-gpu is running in tensorflow2
+    """
+    Function which formats train_predict and test_predict to be formattted for graphing in matplot
+
+    Args:
+        Y_train:
+        X_train:
+
+
+    Returns:
+        model:
+
+
+    """
+
     model = Sequential()
     model.add(LSTM(64, input_shape=(X_train.shape[1], 1), return_sequences=True, activation='relu'))
     model.add(Dropout(.2))
@@ -135,11 +173,6 @@ def build_model(X_train: np.ndarray, Y_train: np.ndarray) -> tf.keras.models.Seq
     return model
 
 
-def save_model(model):
-    # TODO implement model saving
-    return model
-
-
 def graph_format(dataset: list, train_predict: np.ndarray, test_predict: np.ndarray) -> np.ndarray:
     """
     Function which formats train_predict and test_predict to be formattted for graphing in matplot
@@ -150,6 +183,8 @@ def graph_format(dataset: list, train_predict: np.ndarray, test_predict: np.ndar
         test_predict: testing predictions
 
     Returns:
+        train_predict_plot:
+        test_predict_plot:
 
     """
     train_predict, test_predict = data_scaler('inverse', train_predict, test_predict)
@@ -183,9 +218,12 @@ def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
     plt.plot(df['Date'], train_predict_plot, "-b", label="Train predict")
     plt.plot(df['Date'], test_predict_plot, "-y", label="Test predict")
     plt.plot(df['Date'], df['Adj Close'], "-g", label="Original")
+    plt.xlim(('2019-11-21', '2019-12-14'))
+
     plt.xlabel('Date')
     plt.ylabel('Adj Close Price')
     plt.legend(loc="upper left")
     plt.tight_layout()
     plt.gcf().autofmt_xdate()
     plt.savefig('imgFile.png')
+    plt.show()

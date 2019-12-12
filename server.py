@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.1.39'
 
 port = 9998
 
@@ -82,7 +82,7 @@ def gather_data(tkr):
     end = dt.datetime(year, month, day)
 
     df = web.DataReader(tkr, 'yahoo', start, end)
-    for x in range(0, 5):
+    for x in range(0, 2):
 
         tempEnd = str(end + dt.timedelta(days = x))
         tempEnd = tempEnd.split(" ")[0]
@@ -155,7 +155,9 @@ def make_p(tkr):
     test_predict = model.predict(X_test)
     prediction = graph_format(dataset, train_predict, test_predict)[1]
     print(prediction)
-    prediction = prediction[-5][0]
+    print(prediction[-1][0])
+
+    prediction = prediction[-1][0]
     prediction = round(prediction, 2)
     return f'${prediction}'
 
