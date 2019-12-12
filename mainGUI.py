@@ -11,7 +11,6 @@
 #
 # NOTE: The server object was also designed and implemented
 # by Jordan Davis and Ryan Harris.
-import os
 from tkinter import *
 from tkinter import messagebox
 from tkinter.ttk import Button, Label, Entry
@@ -30,7 +29,7 @@ class MainGUI:
             void
          """
         # sets host and port of server
-        self.host = '192.168.210.170'
+        self.host = '10.18.207.18'
         self.port = 9998
 
         # sets up empty var for ticker
@@ -103,7 +102,7 @@ class MainGUI:
             else:
                 raise ValueError('Empty string')
 
-            self.update_prediction_out('Please wait..')
+            self.update_prediction_out('Please wait. This could take up to 1 minute.')
 
             client_socket = StockPSocket(self.host, self.port)
             if client_socket.validate(ticker + 'v') == 'error':

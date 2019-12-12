@@ -1,10 +1,8 @@
 # echo server
 import socket
 import pandas as pd
-import numpy as np
 import pandas_datareader as web
 import datetime as dt
-import matplotlib.pyplot as plt
 import os
 import tensorflow as tf
 from data_processor import data_loader
@@ -19,7 +17,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.210.170'
+host = '10.18.207.18'
 
 port = 9998
 

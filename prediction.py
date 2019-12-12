@@ -1,9 +1,10 @@
+# IMPORTANT!! This file is for testing purposes only
 from data_processor import data_loader
 from data_processor import train_test_split
 from data_processor import data_scaler
 from data_processor import generate_sets
 from data_processor import build_model
-import numpy
+
 
 # TODO: Move this to different file
 from data_processor import graph_format
