@@ -231,4 +231,3 @@ def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
     plt.tight_layout()
     plt.gcf().autofmt_xdate()
     plt.savefig('imgFile.png')
-    plt.show()

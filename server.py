@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '192.168.210.170'
 
 port = 9998
 
@@ -82,9 +82,8 @@ def gather_data(tkr):
     end = dt.datetime(year, month, day)
 
     df = web.DataReader(tkr, 'yahoo', start, end)
-    for x in range(0, 2):
-
-        tempEnd = str(end + dt.timedelta(days = x))
+    for x in range(1, 3):
+        tempEnd = str(end + dt.timedelta(days=x))
         tempEnd = tempEnd.split(" ")[0]
         df = df.append(pd.Series(name=tempEnd))
     df = df.fillna('nan')
@@ -113,7 +112,7 @@ def make_g(tkr):
 
     X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
 
-    model = build_model(X_train, Y_train)
+    model = tf.keras.models.load_model("model.h5")
 
     model.save('model.h5')
     train_predict = model.predict(X_train)
@@ -148,16 +147,16 @@ def make_p(tkr):
     train_scaled, test_scaled = data_scaler('fit', train, test)
     X_train, Y_train, X_test, Y_test = generate_sets(train_scaled, test_scaled)
 
-    model = tf.keras.models.load_model("model.h5")
+    model = build_model(X_train, Y_train)
 
     train_predict = model.predict(X_train)
 
     test_predict = model.predict(X_test)
     prediction = graph_format(dataset, train_predict, test_predict)[1]
     print(prediction)
-    print(prediction[-1][0])
+    print(prediction[-2][0])
 
-    prediction = prediction[-1][0]
+    prediction = prediction[-2][0]
     prediction = round(prediction, 2)
     return f'${prediction}'
 
