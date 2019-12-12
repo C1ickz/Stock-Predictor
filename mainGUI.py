@@ -103,7 +103,7 @@ class MainGUI:
             else:
                 raise ValueError('Empty string')
 
-            self.update_prediction_out('Please wait..')
+            self.update_prediction_out('Please wait. This could take up to 1 minute.')
 
             client_socket = StockPSocket(self.host, self.port)
             if client_socket.validate(ticker + 'v') == 'error':
