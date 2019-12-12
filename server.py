@@ -19,7 +19,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '192.168.1.39'
+host = '10.18.207.18'
 
 port = 9998
 
