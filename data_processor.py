@@ -26,9 +26,7 @@ def data_loader(filename: str) -> Tuple[pd.DataFrame, list]:
         df: All stock information that was in the csv file that pandas read in
         dataset: List of tuples for every date and close value. Tuples are in the format (Date, Adj Close)
 
-
     """
-
     df = pd.read_csv(filename)  # converts pandas dataframe to csv
     df['Date'] = pd.to_datetime(df['Date'])  # Puts all dates into datetime format
     dataset = list(zip(df['Date'], df['Adj Close'].values))
@@ -50,14 +48,12 @@ def train_test_split(df: pd.DataFrame, dataset: list) -> np.ndarray:
          and will be used to predict how accurate the model is
 
      """
-
     trainingRange = int(len(dataset) - 20)
     print("The training range is", trainingRange)
     train = df['Adj Close'].iloc[:trainingRange].values
     test = df['Adj Close'].iloc[trainingRange:].values
     train = np.reshape(train, (-1, 1))
     test = np.reshape(test, (-1, 1))
-    print(train)
 
     return train, test
 
@@ -67,7 +63,7 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
     Function which scales the data between 0 and 1 or transforms it
 
      Args:
-         action: Action of whether to iverse transform or scale data
+         action: Action of whether to inverse transform or scale data
          train: training data
          test: testing data
 
@@ -80,7 +76,6 @@ def data_scaler(action: str, train: np.ndarray, test: np.ndarray) -> np.ndarray:
                       If action == 'inverse' {returns test_scaled array}
 
      """
-
     if action.lower() == 'fit':
         train_scaled = scaler.fit_transform(train)
         test_scaled = scaler.transform(test)
@@ -105,7 +100,6 @@ def to_sequences(data: np.ndarray, window_size: int) -> np.ndarray:
     Returns:
         np.array(x): numpy array of x training data
         np.array(y): numpy array of y training daata
-
 
     """
     x = []
@@ -135,12 +129,10 @@ def generate_sets(train_scaled: np.ndarray, test_scaled: np.ndarray) -> np.ndarr
         Y_test: Expected outcomes/label of test data
 
     """
-
     X_train, Y_train = to_sequences(train_scaled, WINDOW_SIZE)
     X_test, Y_test = to_sequences(test_scaled, WINDOW_SIZE)
     X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
     X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
-    print(X_test)
     print("=============================================================")
     print(f"X_trains shape is {X_train.shape} ; Y_Trains shape is {Y_train.shape}")
     print(f"X_tests shape is {X_test.shape} ; Y_Tests shape is {Y_test.shape}")
@@ -161,7 +153,6 @@ def build_model(X_train: np.ndarray, Y_train: np.ndarray) -> tf.keras.models.Seq
 
     Returns:
         model: Weights and biases learned from the training data
-
 
     """
 
@@ -220,14 +211,13 @@ def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
     plt.clf()  # Clears currently plotted figure
     plt.title(f"{tkr.upper()} Stock Information")
     print(f"Test predict plots shape is {test_predict_plot.shape}")
-    plt.plot(df['Date'], train_predict_plot, "-b", label="Train predict")
-    plt.plot(df['Date'], test_predict_plot, "-y", label="Test predict")
+    plt.plot(df['Date'], test_predict_plot, "-y", label="Predcition")
     plt.plot(df['Date'], df['Adj Close'], "-g", label="Original")
     plt.xlim(('2019-11-21', '2019-12-14'))
 
     plt.xlabel('Date')
     plt.ylabel('Adj Close Price')
-    plt.legend(loc="upper left")
     plt.tight_layout()
     plt.gcf().autofmt_xdate()
+    plt.legend(loc='upper left')
     plt.savefig('imgFile.png')

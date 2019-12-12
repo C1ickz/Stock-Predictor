@@ -153,7 +153,7 @@ def make_p(tkr):
 
     test_predict = model.predict(X_test)
     prediction = graph_format(dataset, train_predict, test_predict)[1]
-    print(prediction)
+    print(prediction) # debugging code
     print(prediction[-2][0])
 
     prediction = prediction[-2][0]
