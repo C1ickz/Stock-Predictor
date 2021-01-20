@@ -1,6 +1,6 @@
 # Developed by: Jordan Davis and Ryan Harris
 #
-# Emails: davisja2023@mountunion.edu and harrisrl2023@mountunion.edu
+# Emails: davisja2023@mountunion.edu and rh297019@ohio.edu
 #
 # Description:This program has a user-facing GUI that interacts
 # with a server. The server predicts future stock prices using
