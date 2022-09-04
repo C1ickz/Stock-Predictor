@@ -17,7 +17,7 @@ from data_processor import graph_data
 serverS = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # ipv4 address of server
-host = '10.18.207.18'
+host = '127.0.0.1'
 
 port = 9998
 
@@ -51,8 +51,10 @@ def validate_tkr(tkr):
     month = one_week_ago.month
     day = one_week_ago.day
     one_week_ago = dt.datetime(year, month, day)
+    
     try:
-        df = web.DataReader(tkr, 'yahoo', one_week_ago, end_d)
+        df = web.DataReader(tkr, 'yahoo', start=one_week_ago.date(), end=end_d.date())
+        print(df)
         gather_data(tkr)
         return 'success'
     except Exception:

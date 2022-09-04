@@ -7,6 +7,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 from tensorflow.keras.callbacks import EarlyStopping
 from typing import NoReturn, Tuple
+from datetime import date,timedelta
 
 # This python file will process the data and train it.
 # No prediction will be done in here
@@ -213,7 +214,7 @@ def graph_data(df: pd.DataFrame, train_predict_plot: np.ndarray,
     print(f"Test predict plots shape is {test_predict_plot.shape}")
     plt.plot(df['Date'], test_predict_plot, "-y", label="Predcition")
     plt.plot(df['Date'], df['Adj Close'], "-g", label="Original")
-    plt.xlim(('2019-11-21', '2019-12-14'))
+    plt.xlim((date.today() - timedelta(days=60), date.today()))
 
     plt.xlabel('Date')
     plt.ylabel('Adj Close Price')
